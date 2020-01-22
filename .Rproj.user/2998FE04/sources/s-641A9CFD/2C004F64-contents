@@ -1,0 +1,16 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warnings = FALSE, messages = FALSE)
+```
+
+```{r, out.width="100%"}
+knitr::include_graphics("http://folk.uio.no/athanasm/Lifebrain/LBppt_picture.jpg")
+```
+
+# Talks at Copenhagen PhD conference on longitudinal mixed models
+- **[Background talk](background-talk.html)**  
+- **[Practical talk](practical-talk.html)**  
+
