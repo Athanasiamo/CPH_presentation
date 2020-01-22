@@ -1,0 +1,319 @@
+---
+title: "The use of mixed models in lifespan research"
+subtitle: " - key consepts - "
+author: "Athanasia Mowinckel"
+date: "Feb. 29th 2020"
+output:
+  xaringan::moon_reader:
+    css: [default, lifebrain_h2020.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [middle, right]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false 
+      ratio: "16:9"
+---
+  
+
+```{r setup, include=FALSE, echo = FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse); library(knitr); library(kableExtra)
+library(gganimate); library(mgcv)
+knitr::opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, chache = TRUE, 
+                      warnings = FALSE, messages = FALSE)
+
+theme_set(theme_minimal(base_size = 20, base_line_size = 1, base_family = "Avenir"))
+
+source(paste0(here::here(), "/R/synth-data.R"))
+load(paste0(here::here("data/"), "sim_data.rda"))
+
+sim_data <- sim_data %>% 
+  ungroup() %>% 
+  mutate(
+    nn = row_number(),
+    Hippocampus = as.numeric(Hippocampus)
+  )
+
+limits_y <- c(min(sim_data$Hippocampus), max(sim_data$Hippocampus))
+limits_x <- c(min(sim_data$Age), max(sim_data$Age))
+
+PAL <- colorRampPalette(c("grey45", "goldenrod2"))(length(unique(sim_data$Age_group)))
+names(PAL) <- unique(sim_data$Age_group)
+```
+
+
+# Mixed models in Lifespan research -- talk outline
+
+.pull-left[
+**Background talk**  
+
+- Lifespan research using cohorts  
+- Lifespan research with longitudinal data  
+- Using mixed models with logitudinal data  
+- Examples of mixed models applied in lifespan studies  
+]
+
+--
+
+.pull-right[
+**Practical talk**  
+
+- Mixed model packages in R  
+- Mixed model formula in R  
+- Running linear mixed models  
+- Running smoothing splines in mixed models  
+]
+
+
+??? 
+
+
+---
+
+# Lifespan research using cohorts
+
+.pull-left[
+### Figure out a hypothesis
+### Find a sample to test hypothesis
+### Run experiment
+### Run analyses
+### You have answers
+]
+
+--
+.pull-right[
+```{r "portal"}
+knitr::include_graphics("https://mrlokoblac.files.wordpress.com/2011/03/800px-portal_game_svg.png")
+```
+] 
+
+???
+When I was doing my BA, and also my Master's to some extent, I was presented with stories of doing research being quite straight forward.
+You follow these seemingly simple steps, and you get to do awesome research and find cool things.
+
+Has anyone here played the puzzle game "Portal"? 
+It's a really challenging game of puzzles you need to solve, you are set in a type of experiment and you are told at the end of almost every level or puzzle that you just need to finish all the puzzles and then there will be cake.
+So you start off with low levels, thinking this isn't too hard, you'll soon get cake. 
+Like science during Uni start, just follow the steps, you will make science.
+So you start doing your research, and slowly you start realising there are many hurdles.
+It's a little trickier that the books claim, there are issues people did not discuss with you.
+But you keep going, there will be cake.
+
+---
+class: inverse, center, middle
+
+**What they don't tell you**
+
+```{r "liecake"}
+knitr::include_graphics("https://images-na.ssl-images-amazon.com/images/I/416YS3Qbz2L._SX425_.jpg")
+```
+
+??? 
+Well, it's not a complete lie.
+But the world is much more complex than the text books seem to tell us. 
+And research on humans is very tricky, you cannot control them like you do cell cultures or mice.
+Humans live their lives, and you are lucky if they participate in your study.
+So you take anyone wanting to join, and have to make some constrains to your design.
+
+---
+class: middle, center
+
+# All data synthesized using the LCBC data-base
+
+```{r "lcbc-logo"}
+include_graphics("https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png")
+```
+
+???
+All the data I will be using throughout this talk is synthesized based on the LCBC data-base.
+Which is a data base with more than 2.500 participants, and over 4500 observations across those participants, many having between 3 and 4 measurement timepoints.
+
+---
+
+# Lifespan research using cohorts
+
+```{r "cohorts-anim", include=FALSE}
+states <- list(
+  T1 = c("(0,10]", "(80,90]"),
+  T2 = c("(0,10]","(30,40]", "(80,90]"),
+  T3 = c("(0,10]","(20,30]","(30,40]", "(80,90]"),
+  T4 = c("(0,10]","(10,20]","(20,30]","(30,40]", "(80,90]"),
+  T5 = c("(0,10]","(10,20]","(20,30]","(30,40]","(40,50]", "(80,90]"),
+  T6 = c("(0,10]","(10,20]","(20,30]","(30,40]","(40,50]", "(50,60]", "(80,90]"),
+  T7 = c("(0,10]","(10,20]","(20,30]","(30,40]","(40,50]", "(50,60]", "(60,70]", "(80,90]"),
+  T8 = unique(sim_data$Age_group)
+)
+
+j <- lapply(states, 
+            function(x) sim_data %>% 
+              filter(Age_group %in% x)) %>% 
+  bind_rows(.id="appear2") %>% 
+  mutate(appear2 = parse_number(appear2))
+
+jm <- j %>% 
+  group_by(appear2, Age_group) %>% 
+  group_means(Age, Hippocampus)
+
+
+p <- ggplot(j, aes(x=Age, y=Hippocampus))  +
+  geom_point(alpha=.2, size=.5, colour="grey40", aes(group=nn)) + 
+  geom_errorbar(data=jm, inherit.aes = FALSE, 
+                aes(x=Age_Mean, width=4,
+                    ymin = Hippocampus_Mean - Hippocampus_SE,
+                    ymax = Hippocampus_Mean + Hippocampus_SE)) +
+  geom_point(data=jm, inherit.aes = FALSE, 
+             aes(x=Age_Mean, y = Hippocampus_Mean, 
+                 colour=Age_group)) +
+  geom_line(data=jm, inherit.aes = FALSE, 
+             aes(x=Age_Mean, y = Hippocampus_Mean)) +
+  transition_time(appear2) +
+  ease_aes("cubic-in-out") +
+  enter_grow()
+animate(p, nframes = 700, end_pause = 50, start_pause = 35, duration = 90)
+```
+
+???
+If you begin with two samples, you get a nice straight line. The connection looks simple.
+Then, if you start adding more and more data, filling in the gaps in age, you will start to see that the nice straight line is not so nice and straigt, and the variance between different age cohorts also varies.
+This is not the simple relationship you thought of. 
+
+---
+
+# Lifespan research using cohorts
+
+```{r "cohort-3"}
+filter(j, appear2 == 2) %>% 
+  ggplot(aes(x=Age, y=Hippocampus))  +
+  geom_point(alpha=.2, size=.5, colour="grey40", aes(group=nn)) + 
+  geom_errorbar(data=filter(jm, appear2 == 1), inherit.aes = FALSE, 
+                aes(x=Age_Mean, width=4,
+                    ymin = Hippocampus_Mean - Hippocampus_SE,
+                    ymax = Hippocampus_Mean + Hippocampus_SE)) +
+  geom_point(data=filter(jm, appear2 == 1), inherit.aes = FALSE, 
+             aes(x=Age_Mean, y = Hippocampus_Mean, 
+                 colour=Age_group)) +
+  geom_line(data=filter(jm, appear2 == 1), inherit.aes = FALSE, 
+             aes(x=Age_Mean, y = Hippocampus_Mean))
+```
+
+??? 
+Furthermore, what is the difference between these two cohorts?
+Is it just their age? Can we say that the difference between these two groups is due to age-related changes, or is it tangled together with the generational effects. They are born in completely different times, health care, education, and societal differences are all intertwined in there. 
+
+---
+
+# Lifespan research using cohorts
+
+```{r "cohort-age-groups"}
+sim_data %>% 
+  mutate(group = case_when(Age < 15 ~ "Development", Age > 70 ~ "Ageing", TRUE ~ "Adulthood" )) %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
+  geom_smooth(method = "lm", aes(group = group, colour = group)) +
+  scale_colour_manual(values = c(Lifespan = "black", Development = "goldenrod", Ageing = "goldenrod2", Adulthood = "goldenrod4"))
+```
+
+???
+In many cases, when people have large samples like this, they'll split them up by age-groups, perhaps using breakpoints in the data.
+Here I did a rough grouping based on visual inspection only.
+And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age are opposite. 
+
+---
+
+# Lifespan research using cohorts
+
+```{r "cohort-gam"}
+sim_data %>% 
+  mutate(group = case_when(Age < 15 ~ "Development", Age > 70 ~ "Ageing", TRUE ~ "Adulthood" )) %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
+  geom_smooth(method = "lm", aes(group = group, colour = group)) +
+  geom_smooth(method = 'gam', formula = y ~ s(x), 
+              aes(group="Lifespan", colour="Lifespan")) +
+  scale_colour_manual(values = c(Lifespan = "black", Development = "goldenrod", Ageing = "goldenrod2", Adulthood = "goldenrod4"))
+```
+
+???
+But it does diminish the data, it leaves off important aspects, and we still have not solved the generational effects.
+And in true, the model fit here is not really linear, it has a smooth shape. 
+A cruve that we should be accounting for in some way.
+
+But it wont actually matter even if we fill in all the age-gaps.
+We have distinct observations of distinct people, born in different times from eachother.
+Albeit there is a more fluent transition, it does not change that we cannot really talk about change, just differences between age-cohorts.
+To disentangle we need longitudinal measurements, encompassing the entire lifespan.
+
+---
+
+# Lifespan research with longitudinal data
+
+```{r "long"}
+sim_data %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
+  geom_line(aes(group = ID), alpha=.6)
+```
+
+??? 
+
+So we have our data points, this is the same data as before. 
+The difference is that we have connected data to the individuals we have followed over time. 
+Notice how there are longitudinal participants across the entire lifespan, and that there is some order here. 
+So what happens now. 
+We have longitudinal data, people are sampled at different ages, with different time intervals, and varying observational timepoints. 
+We are breaking all the rules for running simpler models like repeated measures anovas, who particularly depend on data being sampled uniformly.
+Longitudinal lifespan data does not have this tidy feature. People are difficult to sample.
+
+---
+
+# Lifespan research with longitudinal data
+
+```{r "long-smooth"}
+sim_data %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
+  geom_line(aes(group = ID), alpha=.6) +
+  geom_smooth(method = 'gam', formula = y ~ s(x), 
+              aes(group="Lifespan", colour="Lifespan"))
+```
+
+??? 
+Ignoring the logitudinal aspect of the data, the gam-fit is the same as before. 
+The data is the same, the model has no idea that datapoints are actually not independent.
+Because that is what longitudinal data is, right. Observations from the same people are dependent on the values of the previous observations from the same person. 
+People correlate with them selves, that is the whole point. 
+
+
+---
+
+# Lifespan research with longitudinal data
+
+```{r "gam-vs-gamm}
+m1 <- gam(Hippocampus ~ s(Age), data = sim_data)
+mm1 <- gamm(Hippocampus ~ s(Age), 
+            data = sim_data, random = list(ID = ~1))
+
+fit_data <- sim_data %>% 
+  mutate(
+    gam_fit = predict(m1, new.data = tibble(Age = seq(0,100, by=1)), se.fit = TRUE)[[1]],
+    gam_se = predict(m1, new.data = tibble(Age = seq(0,100, by=1)), se.fit = TRUE)[[2]],
+    gamm_fit = predict(mm1$gam, new.data = tibble(Age = seq(0,100, by=1)), se.fit = TRUE)[[1]],
+    gamm_se = predict(mm1$gam, new.data = tibble(Age = seq(0,100, by=1)), se.fit = TRUE)[[2]]
+    ) %>% 
+  gather(key, val, contains("gam")) %>% 
+  separate(key, c("method", "stat")) %>% 
+  spread(stat, val)
+
+sim_data %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
+  geom_line(aes(group = ID), alpha=.6) +
+  geom_ribbon(data = fit_data, alpha=.3,
+              aes(ymin=fit-se, ymax=fit+se, group=method, fill=method)) +
+  geom_line(data = fit_data, aes(y=fit, group=method, colour=method), size=1) 
+
+```
+
+
+

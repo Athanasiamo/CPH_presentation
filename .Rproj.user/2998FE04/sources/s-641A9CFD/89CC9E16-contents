@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>The use of mixed models in lifespan research</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Athanasia Mowinckel" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="lifebrain_h2020.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: middle, right, title-slide
+
+# The use of mixed models in lifespan research
+## - key consepts -
+### Athanasia Mowinckel
+### Feb. 29th 2020
+
+---
+
+  
+
+
+
+
+# Lifespan research using cohorts
+
+.pull-left[
+### Figure out a hypothesis
+### Find a sample to test hypothesis
+### Run experiment
+### Run analyses
+### You have answers
+]
+
+--
+.pull-right[
+![](https://www.pngfind.com/pngs/m/613-6135792_half-life-portal-is-now-free-portal-logos.png)&lt;!-- --&gt;
+] 
+
+???
+When I was doing my BA, and also my Master's to some extent, I was presented with stories of doing research being quite straight forward.
+You follow these seemingly simple steps, and you get to do awesome research and find cool things.
+
+Has anyone here played the puzzle game "Portal"? 
+It's a really challenging game of puzzles you need to solve, you are set in a type of experiment and you are told at the end of almost every level or puzzle that you just need to finish all the puzzles and then there will be cake.
+So you start off with low levels, thinking this isn't too hard, you'll soon get cake. 
+Like science during Uni start, just follow the steps, you will make science.
+So you start doing your research, and slowly you start realising there are many hurdles.
+It's a little trickier that the books claim, there are issues people did not discuss with you.
+But you keep going, there will be cake.
+
+---
+class: inverse, center, middle
+
+**What they don't tell you**
+
+![](https://images-na.ssl-images-amazon.com/images/I/416YS3Qbz2L._SX425_.jpg)&lt;!-- --&gt;
+
+??? 
+Well, it's not a complete lie.
+But the world is much more complex than the text books seem to tell us. 
+And research on humans is very tricky, you cannot control them like you do cell cultures or mice.
+Humans live their lives, and you are lucky if they participate in your study.
+So you take anyone wanting to join, and have to make some constrains to your design.
+
+---
+class: middle, center
+
+# All data synthesized using the LCBC data-base
+
+![](https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png)&lt;!-- --&gt;
+
+???
+All the data I will be using throughout this talk is synthesized based on the LCBC data-base.
+Which is a data base with more than 2.500 participants, and over 4500 observations across those participants, many having between 3 and 4 measurement timepoints.
+
+---
+
+# Lifespan research using cohorts
+
+
+
+![](../figures/cohort.gif)&lt;!-- --&gt;
+
+???
+If you begin with two samples, you get a nice straight line. The connection looks simple.
+Then, if you start adding more and more data, filling in the gaps in age, you will start to see that the nice straight line is not so nice and straigt, and the variance between different age cohorts also varies.
+This is not the simple relationship you thought of. 
+
+---
+
+# Lifespan research using cohorts
+
+![](background-talk_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+??? 
+Furthermore, what is the difference between these two cohorts?
+Is it just their age? Can we say that the difference between these two groups is due to age-related changes, or is it tangled together with the generational effects. They are born in completely different times, health care, education, and societal differences are all intertwined in there. 
+
+---
+
+# Lifespan research using cohorts
+
+![](background-talk_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+???
+In many cases, when people have large samples like this, they'll split them up by age-groups, perhaps using breakpoints in the data.
+Here I did a rough grouping based on visual inspection only.
+And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age are opposite. 
+But it does diminish the data, it leaves off important aspects, and we still have not solved the generational effects.
+
+---
+
+# Lifespan research with longitudinal data
+
+![](background-talk_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+??? 
+
+So it wont actually matter even if we fill in all the age-gaps.
+We have distinct observations of distinct people, born in different times from eachother.
+Albeit there is a more fluent transition, it does not change that we cannot really talk about change, just differences between age-cohorts.
+To disentangle we need longitudinal measurements, encompassing the entire lifespan.
+So we have our data points, this is the same data as before. 
+The difference is that we have connected data to the individuals we have followed over time. 
+Notice how there are longitudinal participants across the entire lifespan, and that there is some order here. 
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

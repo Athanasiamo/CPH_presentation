@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1579516703790.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "ECA3C20D",
+    "lastKnownWriteTime" : 1579587672,
+    "last_content_update" : 1579587672665,
+    "path" : "~/R-stuff/CPH_presentation/R/synth-data.R",
+    "project_path" : "R/synth-data.R",
+    "properties" : {
+        "cursorPosition" : "19,0",
+        "scrollLine" : "8",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

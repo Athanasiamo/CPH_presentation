@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1579522174684.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E18AD8CE",
+    "lastKnownWriteTime" : 1579527908,
+    "last_content_update" : 1579527908335,
+    "path" : "~/R-stuff/CPH_presentation/docs/lifebrain_h2020.css",
+    "project_path" : "docs/lifebrain_h2020.css",
+    "properties" : {
+        "cursorPosition" : "17,27",
+        "scrollLine" : "5"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "css"
+}

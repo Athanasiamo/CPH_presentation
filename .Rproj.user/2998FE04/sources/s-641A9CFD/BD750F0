@@ -1,0 +1,28 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1579505858564.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "BD750F0",
+    "lastKnownWriteTime" : 1579689577,
+    "last_content_update" : 1579689577551,
+    "path" : "~/R-stuff/CPH_presentation/docs/background-talk.Rmd",
+    "project_path" : "docs/background-talk.Rmd",
+    "properties" : {
+        "cursorPosition" : "254,37",
+        "docOutlineVisible" : "1",
+        "last_setup_crc32" : "641A9CFDbb8a8d57",
+        "scrollLine" : "235",
+        "working_dir" : "project"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
