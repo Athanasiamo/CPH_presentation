@@ -3,5 +3,7 @@
 
 # Talks at Copenhagen PhD conference on longitudinal mixed models
 
-  - **[Background talk](docs/background-talk.html)**  
-  - **[Practical talk](docs/practical-talk.html)**
+  - **[Background
+    talk](https://athanasiamo.github.io/CPH_presentation/background-talk.html)**  
+  - **[Practical
+    talk](https://athanasiamo.github.io/CPH_presentation/practical-talk.html)**
