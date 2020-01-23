@@ -19,20 +19,21 @@ output:
 ```{r setup, include=FALSE, echo = FALSE}
 options(htmltools.dir.version = FALSE)
 library(tidyverse); library(knitr); library(kableExtra)
-library(gganimate); library(mgcv)
-knitr::opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, chache = TRUE, 
-                      warnings = FALSE, messages = FALSE)
+library(gganimate); library(mgcv); library(nlme)
+opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, cache = TRUE, 
+               warning = FALSE, message = FALSE, dpi = 200)
 
 theme_set(theme_minimal(base_size = 20, base_line_size = 1, base_family = "Avenir"))
 
-source(paste0(here::here(), "/R/synth-data.R"))
-load(paste0(here::here("data/"), "sim_data.rda"))
+source(here::here("/R/synth-data.R"))
+load(here::here("data/sim_data.rda"))
 
 sim_data <- sim_data %>% 
   ungroup() %>% 
   mutate(
     nn = row_number(),
-    Hippocampus = as.numeric(Hippocampus)
+    Hippocampus = as.numeric(Hippocampus),
+    group = case_when(Age < 15 ~ "Development", Age > 70 ~ "Ageing", TRUE ~ "Adulthood" )
   )
 
 limits_y <- c(min(sim_data$Hippocampus), max(sim_data$Hippocampus))
@@ -50,7 +51,8 @@ names(PAL) <- unique(sim_data$Age_group)
 
 - Lifespan research using cohorts  
 - Lifespan research with longitudinal data  
-- Using mixed models with logitudinal data  
+- Using linear mixed models with logitudinal data  
+- Using generalised additive mixed models with logitudinal data  
 - Examples of mixed models applied in lifespan studies  
 ]
 
@@ -64,10 +66,6 @@ names(PAL) <- unique(sim_data$Age_group)
 - Running linear mixed models  
 - Running smoothing splines in mixed models  
 ]
-
-
-??? 
-
 
 ---
 
@@ -109,7 +107,10 @@ class: inverse, center, middle
 knitr::include_graphics("https://images-na.ssl-images-amazon.com/images/I/416YS3Qbz2L._SX425_.jpg")
 ```
 
+
 ??? 
+
+
 Well, it's not a complete lie.
 But the world is much more complex than the text books seem to tell us. 
 And research on humans is very tricky, you cannot control them like you do cell cultures or mice.
@@ -121,11 +122,13 @@ class: middle, center
 
 # All data synthesized using the LCBC data-base
 
-```{r "lcbc-logo"}
-include_graphics("https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png")
+```{r "lcbc-logo", out.width=c("60%","15%")}
+include_graphics(c("https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png",
+                   "https://www.sv.uio.no/psi/personer/vit/oyss/oystein-sorensen-foto-uio.jpg"))
 ```
 
 ???
+
 All the data I will be using throughout this talk is synthesized based on the LCBC data-base.
 Which is a data base with more than 2.500 participants, and over 4500 observations across those participants, many having between 3 and 4 measurement timepoints.
 
@@ -133,7 +136,22 @@ Which is a data base with more than 2.500 participants, and over 4500 observatio
 
 # Lifespan research using cohorts
 
-```{r "cohorts-anim", include=FALSE}
+```{r "cohorts-anim"}
+knitr::include_graphics("anims/cohort.gif")
+```
+
+
+???
+
+If you begin with two samples, you get a nice straight line. The connection looks simple.
+Then, if you start adding more and more data, filling in the gaps in age, you will start to see that the nice straight line is not so nice and straigt, and the variance between different age cohorts also varies.
+This is not the simple relationship you thought of. 
+
+---
+
+# Lifespan research using cohorts
+
+```{r "cohort-3"}
 states <- list(
   T1 = c("(0,10]", "(80,90]"),
   T2 = c("(0,10]","(30,40]", "(80,90]"),
@@ -155,49 +173,23 @@ jm <- j %>%
   group_by(appear2, Age_group) %>% 
   group_means(Age, Hippocampus)
 
-
-p <- ggplot(j, aes(x=Age, y=Hippocampus))  +
-  geom_point(alpha=.2, size=.5, colour="grey40", aes(group=nn)) + 
-  geom_errorbar(data=jm, inherit.aes = FALSE, 
-                aes(x=Age_Mean, width=4,
-                    ymin = Hippocampus_Mean - Hippocampus_SE,
-                    ymax = Hippocampus_Mean + Hippocampus_SE)) +
-  geom_point(data=jm, inherit.aes = FALSE, 
-             aes(x=Age_Mean, y = Hippocampus_Mean, 
-                 colour=Age_group)) +
-  geom_line(data=jm, inherit.aes = FALSE, 
-             aes(x=Age_Mean, y = Hippocampus_Mean)) +
-  transition_time(appear2) +
-  ease_aes("cubic-in-out") +
-  enter_grow()
-animate(p, nframes = 700, end_pause = 50, start_pause = 35, duration = 90)
-```
-
-???
-If you begin with two samples, you get a nice straight line. The connection looks simple.
-Then, if you start adding more and more data, filling in the gaps in age, you will start to see that the nice straight line is not so nice and straigt, and the variance between different age cohorts also varies.
-This is not the simple relationship you thought of. 
-
----
-
-# Lifespan research using cohorts
-
-```{r "cohort-3"}
-filter(j, appear2 == 2) %>% 
+app <- 2
+filter(j, appear2 == app) %>% 
   ggplot(aes(x=Age, y=Hippocampus))  +
   geom_point(alpha=.2, size=.5, colour="grey40", aes(group=nn)) + 
-  geom_errorbar(data=filter(jm, appear2 == 1), inherit.aes = FALSE, 
+  geom_errorbar(data=filter(jm, appear2 == app), inherit.aes = FALSE, 
                 aes(x=Age_Mean, width=4,
                     ymin = Hippocampus_Mean - Hippocampus_SE,
                     ymax = Hippocampus_Mean + Hippocampus_SE)) +
-  geom_point(data=filter(jm, appear2 == 1), inherit.aes = FALSE, 
+  geom_point(data=filter(jm, appear2 == app), inherit.aes = FALSE, 
              aes(x=Age_Mean, y = Hippocampus_Mean, 
                  colour=Age_group)) +
-  geom_line(data=filter(jm, appear2 == 1), inherit.aes = FALSE, 
+  geom_line(data=filter(jm, appear2 == app), inherit.aes = FALSE, 
              aes(x=Age_Mean, y = Hippocampus_Mean))
 ```
 
 ??? 
+
 Furthermore, what is the difference between these two cohorts?
 Is it just their age? Can we say that the difference between these two groups is due to age-related changes, or is it tangled together with the generational effects. They are born in completely different times, health care, education, and societal differences are all intertwined in there. 
 
@@ -207,89 +199,175 @@ Is it just their age? Can we say that the difference between these two groups is
 
 ```{r "cohort-age-groups"}
 sim_data %>% 
-  mutate(group = case_when(Age < 15 ~ "Development", Age > 70 ~ "Ageing", TRUE ~ "Adulthood" )) %>% 
   ggplot(aes(x=Age, y=Hippocampus)) +
-  geom_point(alpha=.6) +
-  geom_smooth(method = "lm", aes(group = group, colour = group)) +
-  scale_colour_manual(values = c(Lifespan = "black", Development = "goldenrod", Ageing = "goldenrod2", Adulthood = "goldenrod4"))
+  geom_point(alpha=.4) +
+  geom_smooth(method = "lm", aes(group = group, colour = group, fill=group)) +
+  scale_colour_manual(values = c(Lifespan = "black", Development = "goldenrod", Ageing = "goldenrod2", Adulthood = "goldenrod4"),
+                      aesthetics = c("colour", "fill"))
 ```
 
 ???
+
 In many cases, when people have large samples like this, they'll split them up by age-groups, perhaps using breakpoints in the data.
 Here I did a rough grouping based on visual inspection only.
 And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age are opposite. 
 
 ---
+class: inverse
 
 # Lifespan research using cohorts
 
-```{r "cohort-gam"}
+.pull-left[
+## Number of cohorts
+### Two or three age cohorts are not enough to elucidate lifespan trajectories  
+### Given enough cohorts, we can cover the lifespan and reveal plausible trajectories  
+]
+
+--
+
+.pull-right[
+## Cohort limitations
+### We cannot distinguish between cohort effects and lifespan changes  
+### Cohort sizes should be roughly equal, and have roughly equal variance  
+]
+
+---
+
+# Lifespan research with longitudinal data - Linear models
+```{r "long-lm"}
 sim_data %>% 
-  mutate(group = case_when(Age < 15 ~ "Development", Age > 70 ~ "Ageing", TRUE ~ "Adulthood" )) %>% 
+  filter(group == "Adulthood") %>% 
   ggplot(aes(x=Age, y=Hippocampus)) +
   geom_point(alpha=.6) +
-  geom_smooth(method = "lm", aes(group = group, colour = group)) +
+  geom_smooth(method = "lm", aes(group = group, colour = group)) 
+```
+
+
+???
+
+For now, I want to zoom in a bit on the adulthood group.
+I choose this because a linear model is not a bad fit for this data.
+You can tell by the data that there is some curvature to the data, but its not so much that a linear model will go very wrong.
+But I was asked to come and talk about lognitudinal data, not cohorts.
+So I've covered cohorts to show-case better what logitudinal studies bring to the table; the ability to actually say something about how people change, not only that there are differences between people of different ages. 
+In this linear model, we are treating every data point as independent, as they are coming from different people. 
+Which in many studies is true, but not for this data. 
+
+---
+
+# Lifespan research with longitudinal data - Linear models
+```{r "long-lm2"}
+sim_data %>% 
+  filter(group == "Adulthood") %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
+  geom_line(aes(group=ID), alpha=.6)
+```
+
+???
+
+Here, I have connected the datapoints originating from the same persion with lines.
+Notice how there are longitudinal participants across the entire lifespan, and that there is some order here. 
+We have longitudinal data, people are sampled at different ages, with different time intervals, and varying observational timepoints. 
+We are breaking all the rules for running simpler models like repeated measures anovas, who particularly depend on data being sampled uniformly.
+Longitudinal lifespan data usually does not have this tidy feature. People are difficult to sample, and controlling time intervals and people skipping measurement times becomes increasingly difficult the longer the study goes on. 
+And you want the studies to keep on going as long as possible, and for each new observation from a participant, that participant becomes increasingly important to the study.
+
+
+---
+
+# Lifespan research with longitudinal data - Linear models
+
+```{r "long-lm3"}
+sim_data %>% 
+  filter(group == "Adulthood") %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
+  geom_line(aes(group=ID), alpha=.6)
+```
+
+??? 
+
+Ignoring the logitudinal aspect of the data, the linear-fit is the same as before for this group. 
+The data is the same, the model has no idea that datapoints are actually not independent.
+Because that is what longitudinal data is, right. Observations from the same people are dependent on the values of the previous observations from the same person. 
+People correlate with them selves, that is the whole point.
+If people did not correlate with themselves we could not predict anything, and the world would be chaos. 
+So we need to give our model that information, that it should not treat every observation like independent, but that there are observations that belong together in some way.
+
+___
+
+# Lifespan research with longitudinal data - Linear models
+
+
+```{r "lmm-fit"}
+adults <- filter(sim_data, group == "Adulthood")
+m1 <- lm(Hippocampus ~ Age, data=adults)
+mm1 <- gamm(Hippocampus ~ Age, random = list(ID = ~1), data=adults)
+
+fit_data <- adults %>% 
+  mutate(
+    lm_fit = predict(m1, new.data = tibble(Age = seq(20,60, by=1)), se.fit = TRUE)[[1]],
+    lm_se = predict(m1, new.data = tibble(Age = seq(20,60, by=1)), se.fit = TRUE)[[2]],
+    lmm_fit = predict(mm1$gam, new.data = tibble(Age = seq(20,60, by=1)), se.fit = TRUE)[[1]],
+    lmm_se = predict(mm1$gam, new.data = tibble(Age = seq(20,60, by=1)), se.fit = TRUE)[[2]]
+    ) %>% 
+  gather(key, val, contains("lm")) %>% 
+  separate(key, c("method", "stat")) %>% 
+  spread(stat, val)
+
+adults%>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
+  geom_line(aes(group = ID), alpha=.6) +
+  geom_ribbon(data = fit_data, alpha=.3,
+              aes(ymin=fit-se, ymax=fit+se, group=method, fill=method)) +
+  geom_line(data = fit_data, aes(y=fit, group=method, colour=method), size=1) 
+
+```
+
+???
+
+Here, we see the regression lines from two different models.
+One is the standard linear model, treating each observation as independent, and another having been informed that some of the observations actually are not independent.
+The change in the line is slight, and you might not think much of it. Indeed, the change is not huge here.
+In the practical talk, I will also cover briefly how you can check which model is best suited for your data, and how you can check if your models are violating base assumptions of the tests you are using.
+The main point here, is that you cannot use a normal linear model on repeated data, because it violates the key assumption of the observations being independent.
+Once you have multiple observations per person, you need to adopt an analysis strategy that accounts for this. 
+Some may argue you could calculate the slope per person, and then use this in a model. Yes, you can, but you loose so much data!
+You loose all those who only have a single data point, and those with more than two, you need to decide which two to take, or the average change, and at which age? 
+It forces you to really reduce the data a lot, when what you have is so rich, and ideal for other types of models, you should be utilizing those.
+
+---
+
+# Lifespan research using cohorts - smooth splines
+
+```{r "cohort-gam"}
+sim_data %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.6) +
   geom_smooth(method = 'gam', formula = y ~ s(x), 
               aes(group="Lifespan", colour="Lifespan")) +
   scale_colour_manual(values = c(Lifespan = "black", Development = "goldenrod", Ageing = "goldenrod2", Adulthood = "goldenrod4"))
 ```
 
 ???
-But it does diminish the data, it leaves off important aspects, and we still have not solved the generational effects.
-And in true, the model fit here is not really linear, it has a smooth shape. 
-A cruve that we should be accounting for in some way.
 
-But it wont actually matter even if we fill in all the age-gaps.
-We have distinct observations of distinct people, born in different times from eachother.
-Albeit there is a more fluent transition, it does not change that we cannot really talk about change, just differences between age-cohorts.
-To disentangle we need longitudinal measurements, encompassing the entire lifespan.
+When looking at the entire dataset, the model fit here is not really linear, it has a smooth shape. 
+A curve that we should be accounting for in some way.
+This is quite common in lifespan research. Usually, there is a type of curve, and the curve is not cubic or quadratic or any type of polynomial.
+Those kinds of curves you can fit using a linear model, though that might sound counter intuitive. Polynomials are variations on the linear model, so it is not too difficult to alter the fit. 
 
----
-
-# Lifespan research with longitudinal data
-
-```{r "long"}
-sim_data %>% 
-  ggplot(aes(x=Age, y=Hippocampus)) +
-  geom_point(alpha=.6) +
-  geom_line(aes(group = ID), alpha=.6)
-```
-
-??? 
-
-So we have our data points, this is the same data as before. 
-The difference is that we have connected data to the individuals we have followed over time. 
-Notice how there are longitudinal participants across the entire lifespan, and that there is some order here. 
-So what happens now. 
-We have longitudinal data, people are sampled at different ages, with different time intervals, and varying observational timepoints. 
-We are breaking all the rules for running simpler models like repeated measures anovas, who particularly depend on data being sampled uniformly.
-Longitudinal lifespan data does not have this tidy feature. People are difficult to sample.
+But this data, is rather a complex type of smoothed spline. It alters its curve in a way that cannot be easily solved with variations of linear models, and requires other types of solutions.
+But as before, the normal generalized additive models require independent observations. 
+This curve show us spline if the data were independent.
+We know they are not.
 
 ---
 
-# Lifespan research with longitudinal data
+# Lifespan research with longitudinal data - smooth splines
 
-```{r "long-smooth"}
-sim_data %>% 
-  ggplot(aes(x=Age, y=Hippocampus)) +
-  geom_point(alpha=.6) +
-  geom_line(aes(group = ID), alpha=.6) +
-  geom_smooth(method = 'gam', formula = y ~ s(x), 
-              aes(group="Lifespan", colour="Lifespan"))
-```
-
-??? 
-Ignoring the logitudinal aspect of the data, the gam-fit is the same as before. 
-The data is the same, the model has no idea that datapoints are actually not independent.
-Because that is what longitudinal data is, right. Observations from the same people are dependent on the values of the previous observations from the same person. 
-People correlate with them selves, that is the whole point. 
-
-
----
-
-# Lifespan research with longitudinal data
-
-```{r "gam-vs-gamm}
+```{r "gam-vs-gamm"}
 m1 <- gam(Hippocampus ~ s(Age), data = sim_data)
 mm1 <- gamm(Hippocampus ~ s(Age), 
             data = sim_data, random = list(ID = ~1))
@@ -314,6 +392,54 @@ sim_data %>%
   geom_line(data = fit_data, aes(y=fit, group=method, colour=method), size=1) 
 
 ```
+
+??? 
+ 
+So when we look at the prediction, the fit, of the model using the information about observations belonging together, the curve changes.
+The change might not seem large here, but it makes a difference, and the line parsimoniously also _looks_ like it fits the data better.
+We no longer have that weird tail going upwards, and there is less waves in the curve, and the curve at the end has a more smooth transition. 
+The gam makes it look like a type of tipping point around age 60, when people have an accelerated decline, and in fact, a lot of research out there is showing just that.
+But here we can see, that when we incorporate longitudinal data aspects, that tipping point is not so tipping, its a more gradual change. 
+And also, we can see that people are not ending up in the same place. 
+People doing well at earliuer ages have a similar change trajectory as those with lower scores, but there is an offset diffference. 
+
+---
+
+# Lifespan research with longitudinal data - examples
+
+```{r "fjell-fig1", out.width="100%"}
+include_graphics("figures/fjell_et_al_2019_fig1.png")
+```
+
+<div style="align: left; font-size: 12pt;">
+Cerebral Cortex, Volume 29, Issue 9, September 2019,  
+Pages 3879–3890, <a href='https://doi.org/10.1093/cercor/bhy266'>https://doi.org/10.1093/cercor/bhy266</a>
+</div>
+
+???
+
+Surface area. Left panel: Clusters of coordinated SA in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+
+
+
+---
+
+# Lifespan research with longitudinal data - examples
+
+```{r "fjell-fig2", out.width="100%"}
+include_graphics("figures/fjell_et_al_2019_fig2.png")
+```
+
+<div style="align: left; font-size: 12pt;">
+Cerebral Cortex, Volume 29, Issue 9, September 2019,  
+Pages 3879–3890, <a href='https://doi.org/10.1093/cercor/bhy266'>https://doi.org/10.1093/cercor/bhy266</a>
+</div>
+
+???
+
+Cortical thickness. Left panel: Clusters of coordinated cortical thickness in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters (see Fig. 1 legend for explanation). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+
+---
 
 
 

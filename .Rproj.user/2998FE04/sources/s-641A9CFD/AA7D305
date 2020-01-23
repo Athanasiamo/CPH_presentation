@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "AA7D305",
-    "lastKnownWriteTime" : 1579673862,
-    "last_content_update" : 1579673862848,
+    "lastKnownWriteTime" : 1579778986,
+    "last_content_update" : 1579778986566,
     "path" : "~/R-stuff/plante/moas-synth.R",
     "project_path" : null,
     "properties" : {
-        "cursorPosition" : "4,0",
-        "scrollLine" : "0",
+        "cursorPosition" : "87,0",
+        "scrollLine" : "63",
         "tempName" : "Untitled2"
     },
     "read_only" : false,

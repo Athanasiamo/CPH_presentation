@@ -1,11 +1,11 @@
 ---
-title: "LCBC presentation"
-subtitle: "- some tagline -"
-author: "Athanasia Monika Mowinckel"
-date: "The Date"
+title: "The use of mixed models in lifespan research"
+subtitle: " - practical examples in R - "
+author: "Athanasia Mowinckel"
+date: "Feb. 29th 2020"
 output:
   xaringan::moon_reader:
-    css: [lcbc-uio.css, lcbc-uio-fonts.css, default]
+    css: [default, lifebrain_h2020.css]
     lib_dir: libs
     nature:
       titleSlideClass: [middle, right]
@@ -15,63 +15,17 @@ output:
       ratio: "16:9"
 ---
 
-layout: true
-    
-<div class="my-sidebar"></div> 
 
----
 
-### Start editing after this
+```{r setup, include=FALSE, echo = FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse); library(knitr); library(kableExtra)
+library(gganimate); library(mgcv); library(nlme)
+opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, cache = TRUE, 
+               warning = FALSE, message = FALSE, dpi = 200)
 
-```{r setup, include=FALSE}
-# Here you can place global options for the entire document.
-# Mostly used for knitr settings, but can also load data etc.
-# Whatever happens here will not show in the presentation.
-knitr::opts_chunk$set(echo = TRUE)
+theme_set(theme_minimal(base_size = 20, base_line_size = 1, base_family = "Avenir"))
+
+source(here::here("/R/synth-data.R"))
+load(here::here("data/sim_data.rda"))
 ```
-
-# Heading 1
-There are several heading levels. 
-
-## Heading 2
-depending on your hierarchy
-
-maybe some latex math? 
-$$\large x = \frac{y}{z} $$
-
-And some **bold** and  _italics_ text? 
-
-Three dashes make a new slide
----
-## Add some R code
-```{r}
-library(ggseg)
-ggseg()
-```
-
----
-
-## Create two columns and mute the R code
-.pull-right[
-This text goes in the right-hand column, while the plot is placed in the left-hand column
-]
-.pull-left[
-```{r, echo=F}
-ggseg(atlas = yeo7, 
-      position="stacked",
-      mapping = aes(fill=area),
-      show.legend = F) + 
-  scale_fill_brain("yeo7")
-```
-]
----
-class: inverse, middle, center
-
-# You can also have some special slides
-## by specifying classes right after the `---`
-
----
-class: dark, middle
-
-# or even with a dark slide!
-because dark is cool, right?

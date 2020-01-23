@@ -1,8 +1,0 @@
-"0","sim_data %>% "
-"0","  mutate(group = case_when(Age < 15 ~ ""Development"", Age > 70 ~ ""Ageing"", TRUE ~ ""Adulthood"" )) %>% "
-"0","  ggplot(aes(x=Age, y=Hippocampus)) +"
-"0","  geom_point(alpha=.6) +"
-"0","  geom_smooth(method = ""lm"", aes(group = group, colour = group)) +"
-"0","  geom_smooth(method = 'gam', formula = y ~ s(x), "
-"0","              aes(group=""Lifespan"", colour=""Lifespan"")) +"
-"0","  scale_colour_manual(values = c(Lifespan = ""black"", Development = ""goldenrod"", Ageing = ""goldenrod2"", Adulthood = ""goldenrod4""))"

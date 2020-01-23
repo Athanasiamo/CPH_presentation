@@ -1,4 +1,0 @@
-"0","sim_data %>% "
-"0","  ggplot(aes(x=Age, y=Hippocampus)) +"
-"0","  geom_point() +"
-"0","  geom_line(aes(group = ID))"

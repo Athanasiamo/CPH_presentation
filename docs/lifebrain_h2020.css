@@ -1,3 +1,7 @@
+p {
+   font-size: 20pt;
+}
+
 .remark-slide-content {
   background-color: #FAFAFA;
   background-image: url(http://folk.uio.no/athanasm/Lifebrain/Lifebrain_logo_bw_rev.png), url(http://folk.uio.no/athanasm/Lifebrain/flag_yellow_high_eu.jpg);
@@ -36,12 +40,12 @@
   color: #1A292C;
 }
 
-.remark-slide-content > inverse {
+/*.remark-slide-content > inverse {
 width: 112px;
 height: 47px;
 border-bottom: 1px solid black;
 position: absolute;
-}
+}*/
 
 /* Removes colored bar from top of the slide resulting in a clear slide */
 .clear{
@@ -126,6 +130,8 @@ position: absolute;
   border-radius: 3px;
   padding: 4px;
 }
+
+
 
 .code10 .remark-code {
   font-size: 10%;
