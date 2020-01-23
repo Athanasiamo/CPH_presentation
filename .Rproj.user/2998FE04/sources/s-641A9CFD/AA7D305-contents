@@ -51,7 +51,7 @@ interval_distributions <- dat %>%
 n <- 1000
 
 sim_data <- tibble(
-  ID = seq(1, n, by = 1),
+  ID = as.factor(seq(1, n, by = 1)),
   random_intercept = sample(random_effects, size = n)
 ) %>% 
   bind_cols(sample_n(bl_age_distribution, n)) %>% 

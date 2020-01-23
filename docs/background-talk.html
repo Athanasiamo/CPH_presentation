@@ -22,8 +22,7 @@ class: middle, right, title-slide
 
 
 
-
-# Mixed models in Lifespan research -- talk outline
+# Mixed models in Lifespan research 
 
 .pull-left[
 **Background talk**  
@@ -93,16 +92,20 @@ Humans live their lives, and you are lucky if they participate in your study.
 So you take anyone wanting to join, and have to make some constrains to your design.
 
 ---
-class: middle, center
 
 # All data synthesized using the LCBC data-base
 
-&lt;img src="https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png" width="60%" /&gt;&lt;img src="https://www.sv.uio.no/psi/personer/vit/oyss/oystein-sorensen-foto-uio.jpg" width="15%" /&gt;
+&lt;img src="https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png" width="75%" style="display: block; margin: auto;" /&gt;&lt;img src="https://www.sv.uio.no/psi/personer/vit/oyss/oystein-sorensen-foto-uio.jpg" width="12%" style="display: block; margin: auto;" /&gt;
 
 ???
 
 All the data I will be using throughout this talk is synthesized based on the LCBC data-base.
 Which is a data base with more than 2.500 participants, and over 4500 observations across those participants, many having between 3 and 4 measurement timepoints.
+
+---
+class: inverse, center
+
+# Lifespan research using cohorts
 
 ---
 
@@ -159,9 +162,22 @@ class: inverse
 ### Cohort sizes should be roughly equal, and have roughly equal variance  
 ]
 
+???
+
+SO there are some limitations with cohorts.
+In fact, the power needed to find results is much higher in cohort studies as compared to longitudinal studies, as I will exemplify from a published study from out center later.
+
+---
+class: center, inverse
+
+# Lifespan research with longitudinal data
+&lt;div style="align: center"&gt;
+&lt;h1&gt; - linear models - &lt;/h1&gt;
+&lt;/div&gt;
+
 ---
 
-# Lifespan research with longitudinal data - Linear models
+# Lifespan research with longitudinal data - linear models
 ![](background-talk_files/figure-html/long-lm-1.png)&lt;!-- --&gt;
 
 
@@ -177,7 +193,7 @@ Which in many studies is true, but not for this data.
 
 ---
 
-# Lifespan research with longitudinal data - Linear models
+# Lifespan research with longitudinal data - linear models
 ![](background-talk_files/figure-html/long-lm2-1.png)&lt;!-- --&gt;
 
 ???
@@ -189,25 +205,9 @@ We are breaking all the rules for running simpler models like repeated measures 
 Longitudinal lifespan data usually does not have this tidy feature. People are difficult to sample, and controlling time intervals and people skipping measurement times becomes increasingly difficult the longer the study goes on. 
 And you want the studies to keep on going as long as possible, and for each new observation from a participant, that participant becomes increasingly important to the study.
 
-
 ---
 
-# Lifespan research with longitudinal data - Linear models
-
-![](background-talk_files/figure-html/long-lm3-1.png)&lt;!-- --&gt;
-
-??? 
-
-Ignoring the logitudinal aspect of the data, the linear-fit is the same as before for this group. 
-The data is the same, the model has no idea that datapoints are actually not independent.
-Because that is what longitudinal data is, right. Observations from the same people are dependent on the values of the previous observations from the same person. 
-People correlate with them selves, that is the whole point.
-If people did not correlate with themselves we could not predict anything, and the world would be chaos. 
-So we need to give our model that information, that it should not treat every observation like independent, but that there are observations that belong together in some way.
-
-___
-
-# Lifespan research with longitudinal data - Linear models
+# Lifespan research with longitudinal data - linear models
 
 
 ![](background-talk_files/figure-html/lmm-fit-1.png)&lt;!-- --&gt;
@@ -223,6 +223,14 @@ Once you have multiple observations per person, you need to adopt an analysis st
 Some may argue you could calculate the slope per person, and then use this in a model. Yes, you can, but you loose so much data!
 You loose all those who only have a single data point, and those with more than two, you need to decide which two to take, or the average change, and at which age? 
 It forces you to really reduce the data a lot, when what you have is so rich, and ideal for other types of models, you should be utilizing those.
+
+---
+class: inverse, center
+
+# Lifespan research with longitudinal data
+&lt;div style="align: center"&gt;
+&lt;h1&gt; - smoothing spline models - &lt;/h1&gt;
+&lt;/div&gt;
 
 ---
 
@@ -259,13 +267,21 @@ And also, we can see that people are not ending up in the same place.
 People doing well at earliuer ages have a similar change trajectory as those with lower scores, but there is an offset diffference. 
 
 ---
+class: inverse, center
 
-# Lifespan research with longitudinal data - examples
+# Mixed models in lifespan research
+&lt;div style="align: center"&gt;
+&lt;h1&gt; - literature examples - &lt;/h1&gt;
+&lt;/div&gt;
 
-&lt;img src="figures/fjell_et_al_2019_fig1.png" width="100%" /&gt;
+---
 
-&lt;div style="align: left; font-size: 12pt;"&gt;
-Cerebral Cortex, Volume 29, Issue 9, September 2019,  
+# Examples from lifespan research
+
+&lt;img src="figures/fjell_2019b_fig1.png" width="100%" /&gt;
+
+&lt;div class="citation"&gt;
+Fjell et al. &lt;i&gt;Cerebral Cortex&lt;/i&gt;, Volume 29, Issue 9, September 2019,  
 Pages 3879–3890, &lt;a href='https://doi.org/10.1093/cercor/bhy266'&gt;https://doi.org/10.1093/cercor/bhy266&lt;/a&gt;
 &lt;/div&gt;
 
@@ -277,22 +293,107 @@ Surface area. Left panel: Clusters of coordinated SA in development, 2- (top), 3
 
 ---
 
-# Lifespan research with longitudinal data - examples
+# Examples from lifespan research
 
-&lt;img src="figures/fjell_et_al_2019_fig2.png" width="100%" /&gt;
+&lt;img src="figures/fjell_2019b_fig2.png" width="100%" /&gt;
 
-&lt;div style="align: left; font-size: 12pt;"&gt;
-Cerebral Cortex, Volume 29, Issue 9, September 2019,  
+&lt;div class="citation"&gt;
+Fjell et al. &lt;i&gt;Cerebral Cortex&lt;/i&gt;, Volume 29, Issue 9, September 2019,  
 Pages 3879–3890, &lt;a href='https://doi.org/10.1093/cercor/bhy266'&gt;https://doi.org/10.1093/cercor/bhy266&lt;/a&gt;
 &lt;/div&gt;
+
 ???
 
 Cortical thickness. Left panel: Clusters of coordinated cortical thickness in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters (see Fig. 1 legend for explanation). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
 
 ---
 
+# Examples from lifespan research
+
+&lt;img src="figures/VidalPineiro_2019.jpg" width="75%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Cellular correlates of cortical thinning throughout the lifespan
+Vidal-Piñeiro et al., bioRxiv doi: &lt;a href='https://doi.org/10.1101/585786'&gt;https://doi.org/10.1101/585786&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+Trajectories of average cortical thickness. The upper and lower plots exhibit the trajectories of cortical thickness and cortical thinning during the lifespan, respectively. Cortical thickness fitting (black line) overlies a spaghetti plot that displays each observation (dots), participant (thin lines) and, scanner (color). The y-axis units represent mm and mm/year for the thickness and thinning plots, respectively. The dotted red line in the cortical thinning graph represents 0 change, negative and positive values represent thinning and thickening, respectively.
+
+---
+
+# Examples from lifespan research
+
+.pull-left[
+### Figure 2
+&lt;img src="figures/fjell_2019a_fig1.jpg" width="68%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+### Figure 3
+&lt;img src="figures/fjell_2019a_fig2.jpg" width="68%" style="display: block; margin: auto;" /&gt;
+]
+
+&lt;div style="text-align: right; font-size: 12pt;"&gt;
+Fjell et al. 
+&lt;i&gt;Developmental Cognitive Neuroscience&lt;/i&gt;, Volume 40, December 2019, &lt;a href='https://doi.org/10.1016/j.dcn.2019.100723'&gt;https://doi.org/10.1016/j.dcn.2019.100723&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+Fig. 2. Developmental trajectories for memory.
+Development of CVLT (left column) and CFT (right column) recall performance. The plots in the bottom row show how performance in the 10 days retention interval recall condition improves when recall performance on the 30 min retention interval condition is accounted for.
+
+Fig. 3. Developmental trajectories for hippocampus.
+Structural maturation of hippocampal sub-regions. Top row shows microstructure (mean diffusion), bottom row shows volume.
 
 
+---
+
+# Examples from lifespan research
+
+&lt;img src="figures/fjell_sleep_2019_fig2.jpg" width="65%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Fjell et al. 
+&lt;i&gt;Sleep&lt;/i&gt;, November 2019, &lt;a href='https://doi.org/10.1093/sleep/zsz280'&gt;https://doi.org/10.1093/sleep/zsz280&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+Relationships between age and hippocampal volume in Lifebrain. Left panel: GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). Dotted lines represent 95% CI. Right panel: Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample. x-Axis denotes age in years, y-axis hippocampal volume in mm3.
+
+---
+
+# Examples from lifespan research
+
+&lt;img src="figures/fjell_sleep_2019_fig9.png" width="65%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Fjell et al. 
+&lt;i&gt;Sleep&lt;/i&gt;, November 2019, &lt;a href='https://doi.org/10.1093/sleep/zsz280'&gt;https://doi.org/10.1093/sleep/zsz280&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+Figure 9. 
+Statistical power. The figure illustrates the superior power of the longitudinal design. The x-axis represents the size of PSQI × time (longitudinal) or PSQI × age interactions (cross-sectional). The y-axis represents statistical power. The dotted vertical line represents the observed effect size of the sleep efficiency × time interaction. As shown, the power to detect this is close to 1 (100%) with the longitudinal design, and very poor with the cross-sectional design.
+
+---
+
+# Examples from lifespan research
+
+&lt;img src="figures/ferschmann_fig3.jpg" width="80%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Freschmann et al. 
+&lt;i&gt;Developmental Cognitive Neuroscience&lt;/i&gt;, Volume 40, December 2019, &lt;a href='https://doi.org/10.1016/j.dcn.2019.100734'&gt;https://doi.org/10.1016/j.dcn.2019.100734&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+Fig. 3. Cortical maturation for individuals with high and low prosociality. Individuals were classified as high prosocial if they consistently rated themselves as high on prosociality throughout the study, and as low prosocial if they consistently rated themselves as low (see Supporting Information (S2.4.3)). The plot shows mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. The fits were produced using the following model: thickness ∼ s(age, bs = ‘cr’) + sex by means of GAMM in R, bs = ‘cr’ refers to splines with cubic spline basis (Wood, 2006). Note that the low/high division was made for illustration purposes only, while the statistical analyses were run with prosocial behavior as a continuous measure.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

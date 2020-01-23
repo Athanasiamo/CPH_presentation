@@ -2,6 +2,10 @@ p {
    font-size: 20pt;
 }
 
+a {
+  color: #585858
+}
+
 .remark-slide-content {
   background-color: #FAFAFA;
   background-image: url(http://folk.uio.no/athanasm/Lifebrain/Lifebrain_logo_bw_rev.png), url(http://folk.uio.no/athanasm/Lifebrain/flag_yellow_high_eu.jpg);
@@ -21,7 +25,7 @@ p {
 .inverse {
   background-color: #000000;
   text-shadow: none;
-  color: #FAFAFA;
+  color: #fff;
 }
 
 .title-slide {
@@ -86,6 +90,7 @@ position: absolute;
   margin-left: 15px;
   padding-top: 80px;
 }
+
 .title-slide > h2  {
   margin-top: -25px;
   padding-bottom: -20px;
@@ -96,6 +101,7 @@ position: absolute;
   text-align: right;
   margin-left: 15px;
 }
+
 .title-slide > h3  {
   color: #1A292C;
   text-shadow: none;
@@ -112,11 +118,21 @@ position: absolute;
   color: #272822;
   opacity: 1;
 }
+
 .inverse .remark-slide-number {
   font-size: 13pt;
   font-family: 'Fira Sans';
-  color: #FAFAFA;
+  color: #FFF;
   opacity: 1;
+}
+
+.citation{
+ text-align: right; 
+ font-size: 12pt;
+}
+
+.inverse h2, .inverse h3 {
+  color: #FFF;
 }
 
 /* turns off slide numbers for title page: https://github.com/gnab/remark/issues/298 */
@@ -130,7 +146,6 @@ position: absolute;
   border-radius: 3px;
   padding: 4px;
 }
-
 
 
 .code10 .remark-code {
