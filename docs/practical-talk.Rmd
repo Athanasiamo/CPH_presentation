@@ -5,7 +5,7 @@ author: "Athanasia Mowinckel"
 date: "Feb. 29th 2020"
 output:
   xaringan::moon_reader:
-    css: [default, lifebrain_h2020.css]
+    css: [lifebrain_h2020.css, default]
     lib_dir: libs
     nature:
       titleSlideClass: [middle, right]
@@ -19,13 +19,833 @@ output:
 
 ```{r setup, include=FALSE, echo = FALSE}
 options(htmltools.dir.version = FALSE)
-library(tidyverse); library(knitr); library(kableExtra)
+library(knitr); library(kableExtra)
 library(gganimate); library(mgcv); library(nlme)
-opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, cache = TRUE, 
+library(tidyverse); library(broom);
+
+opts_chunk$set(echo = TRUE, fig.width = 16, fig.height = 12, cache = TRUE, 
                warning = FALSE, message = FALSE, dpi = 200)
 
-theme_set(theme_minimal(base_size = 20, base_line_size = 1, base_family = "Avenir"))
-
-source(here::here("/R/synth-data.R"))
+theme_set(theme_minimal(base_size = 25, base_line_size = 1, base_family = "Avenir"))
 load(here::here("data/sim_data.rda"))
 ```
+
+# Linear mixed models
+
+## Mixed models have many names, like our favourite pets:  
+
+### - hierarchical models  
+### - linear mixed models 
+### - linear mixed effects  
+### - multi-level models  
+
+
+???
+
+In statistics we are usually taught only to do linear regressions, like t-tests and anova. 
+These are good options when you have single observations per entity, and entity can for instance be a person or a location. 
+If you have repeated observations from the same entity, or there is some hierarchical structure to your data in a way, i.e. your dependent obsverations correlate in some way, a linear mixed model might suit your needs more. 
+
+When searching for information on mixed models, try all these terms, they will give you good coverage of the subject. These terms are not completely synonymous to eachother, but searches on these will help you identify what model applies to your data.
+
+
+---
+
+# Linear mixed models 
+
+.pull-left[
+**Linear models**   
+
+- Homoscedastic (equal variances)  
+
+- No autocorrelation (observations are independent)  
+
+- Resudials should be normally distributed  
+]
+
+.pull-right[
+**Linear mixed models**  
+
+- Handles autocorrelation through _random_ terms  
+
+- Handles heteroscedasticity through _random_ terms  
+
+- Residuals need not be normally distributed  
+
+- When _linear model_ assumptions are met, generally gives same results in large data sets  
+]
+
+---
+
+# Mixed model packages in R
+
+.pull-left[
+### Linear
+```{r eval=FALSE}
+# First available package for LMMs
+library(nlme)
+
+# Newer package, somewhat different syntax
+library(lme4) 
+```
+]
+
+.pull-right[
+### Splines
+```{r eval=FALSE}
+# Based on {nlme} runs smoothing splines
+library(mgcv)
+
+# Based on lme4, runs smoothing splines
+library(gamm4)
+```
+]
+
+### Bayesian
+```{r eval=FALSE}
+library(rstanarm) # Based on lme4/gamm4, runs models in Stan MCMC
+library(brms) # Based on lme4/gamm4, runs models in Stan MCMC
+```
+
+???
+I do not have experience with all these packages, and I'm sure there are more that I do not know of.
+But from all I have read and all tutorials I have done, papers I have worked on, these are the main pacakges people use in R for running mixed models.
+
+
+---
+class: inverse, center
+
+# Getting started
+<div style="align: center">
+<h1> - inspecting the data - </h1>
+</div>
+
+???
+First thing we should do is have a proper look at the data, and get an idea of what we are working with.
+Looking at the structure and relationships in the data helps us formulate a model that is appropriate.
+
+---
+
+# Getting started
+
+
+.pull-left[
+```{r, eval=FALSE}
+library(mgcv) 
+library(tidyverse)
+library(broom)
+
+# Create a directory to place data in
+dir.create("data")
+
+# Download the data and place it in the data folder
+download.file(url = "shorturl.at/ehKL0", 
+              destfile = "data/sim_data.rda")
+
+# Load in the data to R
+load("data/sim_data.rda")
+```
+]
+
+.pull-right[
+```{r, fig.height=10}
+ggplot(sim_data, 
+       aes(x=Age, y=Hippocampus, group=ID)) +
+  geom_point() +
+  geom_line()
+```
+]
+
+???
+
+We will be using the dataset I used in my previous talk to highlight some aspects of mixed models and why use them in lifespan research.
+
+---
+
+# Getting started - data types
+
+.pull-left[
+### Long data
+```{r, echo=FALSE}
+dt_types <- sim_data %>% 
+  slice(1:8) %>% 
+  group_by(ID) %>% 
+  mutate(Time = row_number()) %>% 
+  ungroup() %>% 
+  select(ID, Time, Hippocampus, Matrix) %>% 
+  mutate_at(vars(3:4), round, 2)
+
+dt_types
+```
+
+]
+
+.pull-right[
+### Wide data
+```{r, echo=FALSE}
+dt_types %>% 
+  gather(key, val, Hippocampus, Matrix) %>% 
+  unite(key, c("key", "Time")) %>% 
+  spread(key, val)
+```
+]
+
+???
+
+Its quite common in psychology, at least, that data is entered in the wide format.
+Commonly used programs, like SPSS, need this type of data structure for data analysis. 
+But when doing mixed models, in any program, data need to be long.
+The long data format makes it possible to inform the model of change over time, and the obserations that depend on eachother.
+The long format lets us inform the model about the hierarchy the data has.
+
+---
+
+# Inspecting the data
+### checking the distribution of the data
+
+.pull-left[
+```{r dist1, eval=F}
+sim_data %>%
+  ggplot(aes(x=Hippocampus)) +
+  geom_density(alpha=.5)
+```
+]
+
+.pull-right[
+```{r dist1-out, echo=F, ref.label="dist1", fig.height=12, out.width="100%"}
+```
+]
+
+???
+
+While we need not have the residuals of the models be normally distributed in mixed models, the distribution of the data tells us what type of model is apporpriate to run. By switching to generalized models, we can choose the distributions that fit, so we can create better models.
+Binomial data need binomial distributions
+Ordinal data need logit's etc.
+
+---
+
+## Inspecting the data
+.pull-left[
+```{r plot_smooths, eval = F}
+sim_data %>%
+  ggplot(aes(x=Age,
+             y=Hippocampus)) +
+  geom_jitter(alpha=.2) +
+  geom_smooth(method = "lm",
+              colour="black")
+```
+
+- The `geom_smooth` of ggplot can give us a simple linear regression over the data.
+- It looks like there is an association between hippocampus volume and age.
+]
+
+.pull-right[
+```{r plot_smooths-out, ref.label="plot_smooths", echo=FALSE}
+```
+]
+
+---
+
+class: inverse, center
+
+# Let's do some modelling!
+<div style="align: center">
+<h1> - exploring standard linear models - </h1>
+</div>
+
+---
+
+# Some R-syntax information - formula
+.pull-left[
+To predict hippocampus volume by age: 
+`Hippocampus ~ Age`  
+
+Main effects are added on using `+`. 
+To predicting hippocampus volume by age and sex between observations as main effects.
+`Hippocampus ~ Age + Sex`
+]
+.pull-right[
+
+Interactions are specified with `:`.
+To predicting hippocampus volume by the interaction between age and sex alone.  
+`Hippocampus ~ Age:Sex`
+
+A 'full factorial', a complete mains + interactions can be done as such:  
+`Hippocampus ~ Age + Sex + Age:Sex`
+
+or the shorthand with an asterisk (`*`)  
+`Hippocampus ~ Age * Sex `
+]
+
+???
+Running models in R, we use something we call a `formula`. This is basically an unquoted expression of your model specification.
+
+---
+
+# Linear models - running a simple model
+
+.pull-left[
+```{r tab-lm1}
+# Helps us tidy up model outputs
+library(broom)
+
+# Run standard linear model
+sim_data_lm <- lm(
+  Hippocampus ~ Age,
+  data=sim_data
+)
+```
+```{r, eval=F}
+# Tidy model output into a table
+tidy(sim_data_lm)
+```
+
+]
+
+.pull-right[
+```{r , echo=F}
+tidy(sim_data_lm) %>% #<<
+  knitr::kable(format="html",
+               digits=4, 
+               caption = "Results from linear model predicting hippocampus volume by age")
+```
+
+]
+
+
+
+---
+
+# Linear models - checking assumption violations
+
+.left-column[
+```{r "plot_lm2", eval=FALSE}
+plot(sim_data_lm, 
+     which=1)
+```
+]
+.right-column[
+```{r plot_lm2-out, ref.label="plot_lm2", echo=F,fig.height=8}
+```
+]
+
+???
+
+Simple regressions in R have very easy ways to plot and check for assumption violations, just by plotting the model output.
+This residuals plot clearly shows that the assumption that the residuals be normally distributed is violated. If they were, the red line would be straight from 0, and the dots would appear to be random around the plot.
+
+---
+
+# Linear models - checking assumption violations
+
+.left-column[
+```{r "plot_lm3", eval=FALSE}
+plot(sim_data_lm, 
+     which=2)
+```
+]
+.right-column[
+```{r plot_lm3-out, ref.label="plot_lm3", echo=F, fig.height=8}
+```
+]
+
+???
+The normal QQ-plot is another great way to check violations. The dots should fall along the line should as a straight diagonal from corner to corner.
+This line is not corner-to-corner, and the dots don't all fall along it.
+This means there is something important in the data we are not accounting for.
+
+---
+
+class: dark, middle, center
+
+# Let's do some modelling!
+## Exploring linear mixed models
+
+---
+
+# Linear mixed models
+```{r}
+library(lme4)
+sim_data_lme <- lmer(Hippocampus ~ Age + (1|ID), data = sim_data)
+```
+```{r, eval=FALSE}
+tidy(sim_data_lme)
+```
+
+```{r, echo=FALSE}
+tidy(sim_data_lme) %>%
+  knitr::kable(format = "html",
+               digits = 4) #<<
+```
+
+
+???
+In the package `lme4` a random effect (autororrelation specification)  is added with the formulaeic expression `(1|entity)`, which will fit an independent intercept per entity. In this case, our entity is mountain range.
+
+You may also use the package `nlme` for linear mixed models, but you specify the random effect differently.
+
+---
+
+# Linear mixed models - inspecting residuals
+.left-column[ 
+```{r resid-1, eval=F, fig.show='hold'}
+lme_resid <- 
+  resid(
+    sim_data_lme
+  )
+
+qqnorm(lme_resid)
+qqline(lme_resid)
+```
+]
+.right-column[
+```{r resid-1-out, echo=F, fig.show='hold', fig.height=8}
+lme_resid <- 
+  resid(
+    sim_data_lme
+  )
+
+qqnorm(lme_resid,
+       xlab = "Hippocampus ~ Age + (1|ID)")
+qqline(lme_resid)
+```
+]
+
+???
+With LMEs we no longer get QQ plots to inspect, so we need to force one with some extra coding. 
+And this QQ looks even worse! why?
+
+There is something in the data we are not accounting for.
+Let's look at the original data again and see what it can be
+
+---
+
+# Linear mixed models
+```{r, echo=FALSE, fig.height=6.5, fig.align="center"}
+m1 <- lm(Hippocampus ~ Age, data=sim_data)
+mm1 <- gamm(Hippocampus ~ Age, random = list(ID = ~1), data=sim_data)
+
+
+pred_data <- tibble(Age = 20:60)
+fit_data <- sim_data %>% 
+  mutate(
+    lm_fit = predict(m1, new.data = pred_data, se.fit = TRUE)[[1]],
+    lm_se = predict(m1, new.data = pred_data, se.fit = TRUE)[[2]],
+    lmm_fit = predict(mm1$gam, new.data = pred_data, se.fit = TRUE)[[1]],
+    lmm_se = predict(mm1$gam, new.data = pred_data, se.fit = TRUE)[[2]]
+  ) %>% 
+  gather(key, val, contains("lm")) %>% 
+  separate(key, c("method", "stat")) %>% 
+  spread(stat, val)
+
+sim_data %>% 
+  ggplot(aes(x=Age, y=Hippocampus)) +
+  geom_point(alpha=.3) +
+  geom_line(aes(group = ID), alpha=.3) +
+  geom_ribbon(data = fit_data, alpha=.3,
+              aes(ymin=fit-se, ymax=fit+se, group=method, fill=method)) +
+  geom_line(data = fit_data, aes(y=fit, group=method, colour=method), size=1) +
+  geom_smooth(aes(group="gam", colour="gam", fill="gam")) +
+  scale_colour_manual(values=c("goldenrod", "yellow", "black"), aesthetics = c("fill","colour"))
+```
+
+???
+We are trying to fit a linear model, on data that is quite clearly not linear.
+This standard generalized additive model clearly shows us that a splining function will be much better suited to this data. It follows the trajectories much much better.
+Ww can thankfully do generalized additive mixed models, so that suits are needs!
+
+---
+
+# Generalized Additive Mixed Models
+
+.pull-left[
+```{r}
+library(mgcv)
+sim_data_gamm <- gamm(
+  Hippocampus ~  s(Age),
+  random = list(ID = ~1),
+  data = sim_data)
+```
+```{r, eval=FALSE}
+tidy(sim_data_gamm$gam)
+```
+```{r, echo=FALSE}
+tidy(sim_data_gamm$gam) %>%
+  knitr::kable(format="html",
+               digits = 4)
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+gamm_resid <- resid(sim_data_gamm$gam)
+qqnorm(gamm_resid,
+       xlab = "Hippocampus ~ s(Age) + (1|ID)")
+qqline(gamm_resid)
+```
+]
+
+
+???
+results from smoothing splines have far far trickier results to interpret, in a table that is, than linear models.
+That is because there is no true way to properly explain in numbers how the spline looks, so in general, we interpret the estimated degrees of freedom, telling something about how much degrees of freedom the model needs to do it's estimations, and the p-values to say something about the likelihood of the results showing something true.
+Then we use plots to interpret what the results really mean.
+
+---
+# GAMM - plotting results
+.left-column[
+```{r "resid-gamm-1", eval=FALSE}
+plot(
+  sim_data_gamm$gam
+)
+```
+]
+.right-column[
+```{r "resid-gamm-1-out", ref.label="resid-gamm-1", echo=F, fig.show='hold', fig.height=8, out.width="100%"}
+```
+]
+???
+The standard plot of a gamm-model object looks like this. 
+It's a simple drawing of the spline, it's confidence intervals, and the rug below shows where on the X-axis datapoints land in the original data.
+I find this plot a little unsatisfying, so I always re-create them, using ggplot, and having the spaghetti plots in the background.
+
+---
+
+# GAMM - plotting results
+.pull-left[
+```{r "gamm-gg", eval=FALSE}
+# Create a data frame with 1000 rows, 
+# and Age distributed from 0 to 110
+pred_data <- tibble(
+  Age = seq(0, 110, length.out = 200)
+)
+
+# Predict data using the pred_data, 
+# getting both fit and standard error
+fit_data <- as_tibble(
+  predict(sim_data_gamm$gam, newdata = pred_data, se.fit = TRUE)
+)
+
+# Combine the two
+pred_data <- bind_cols(pred_data, fit_data)
+
+ggplot(pred_data, aes(x=Age, y=fit)) +
+  geom_line()
+```
+] 
+
+.pull-right[
+```{r "gamm-gg-out", ref.label="gamm-gg", echo=F, fig.height=14, out.width="100%"}
+```
+]
+
+???
+
+Plotting gamms require some work, as you need to find the values along X you want to predict, but the nice part is that you can also extend the prediction beyond your own data.
+Truly predicting what your model thinks data outside your sampling range looks like.
+
+---
+
+# GAMM - plotting results
+.pull-left[
+```{r "gamm-gg-2", eval=FALSE}
+sim_data %>% 
+  ggplot(aes(x=Age)) +
+  geom_point(alpha=.3, 
+             aes(y=Hippocampus)) +
+  geom_line(alpha=.3, 
+            aes(y=Hippocampus,
+                group=ID)) +
+  geom_ribbon(data = pred_data,
+              alpha = .4, 
+              fill = "forestgreen",
+              aes(ymin = fit-se.fit, 
+                  ymax = fit+se.fit)) +
+    geom_line(data = pred_data,
+              colour = "forestgreen",
+              aes(y = fit))
+```
+] 
+
+.pull-right[
+```{r "gamm-gg-2-out", ref.label="gamm-gg-2", echo=F, fig.height=14, out.width="100%"}
+```
+]
+
+???
+
+Now that we have the base fit data, we can build the plot.
+
+---
+
+# Generalized Additive Mixed Models
+
+.pull-left[
+```{r}
+sim_data_gamm2 <- gamm(
+  Hippocampus ~  s(Age) + s(Age, by = Matrix),
+  random = list(ID = ~1),
+  data = sim_data)
+```
+```{r, eval=FALSE}
+tidy(sim_data_gamm2$gam)
+```
+```{r, echo=FALSE}
+tidy(sim_data_gamm2$gam) %>%
+  knitr::kable(format="html",
+               digits = 4)
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.show="hold"}
+gamm_resid <- resid(sim_data_gamm2$gam)
+qqnorm(gamm_resid,
+       xlab = "Hippocampus ~ s(Age) + s(Age, by = Matrix) + (1|ID)")
+qqline(gamm_resid)
+```
+]
+---
+
+# Generalized Additive Mixed Models
+
+```{r, out.width="50%", fig.height=11}
+plot(sim_data_gamm2$gam)
+```
+
+???
+Now that we have two smooth terms, we also have two plots!
+But what the heck is up with that second plot, nothing?
+No, there is something there, but by default the plots are returned with the same scale on the y-axis, and so the interaction term looks completely flat.
+
+---
+
+# Generalized Additive Mixed Models
+.pull-left[
+```{r "gamm-gg-m", eval=FALSE}
+plot(
+  sim_data_gamm2$gam, 
+  select = 2, 
+  ylim = c(-30, 30))
+```
+]
+
+.pull-right[
+```{r "gamm-gg-m-out", ref.label="gamm-gg-m", out.width="100%", fig.height=14, echo=FALSE}
+```
+]
+
+---
+# GAMMs - plotting results
+.pull-left[
+```{r "gamm-gg-3", eval=FALSE}
+# Create a data frame with 1000 rows, 
+# and Age distributed from 0 to 110
+pred_data <- tibble(
+  Age = seq(0, 110, length.out = 200),
+  Matrix = 0
+  )
+
+# Predict data using the pred_data, 
+# getting both fit and standard error
+fit_data <- as_tibble(
+  predict(sim_data_gamm2$gam, newdata = pred_data, se.fit = TRUE)
+)
+
+# Combine the two
+pred_data <- bind_cols(pred_data, fit_data)
+
+ggplot(pred_data, aes(x=Age, y=fit)) +
+  geom_ribbon(aes(ymin = fit - se.fit, 
+                  ymax = fit + se.fit),
+              alpha=.4) + 
+  geom_line(size=1.5) 
+
+```
+]
+
+.pull-right[
+```{r "gamm-gg-3-out", ref.label="gamm-gg-3", echo=F, fig.height=14, out.width="100%"}
+```
+]
+
+---
+
+# GAMMs - plotting results
+
+.pull-left[
+```{r "gamm-gg-4", eval=FALSE}
+# expand grid combines all elements
+# so all combinations are created
+pred_data <- expand_grid(
+  Age = seq(0, 110, length.out = 200),
+  Matrix = seq(0, 40, by = 1)
+) %>% 
+  bind_cols(as_tibble(
+    predict(sim_data_gamm2$gam, 
+            newdata = ., 
+            se.fit = TRUE)
+  ))
+
+
+ggplot(pred_data, 
+       aes(x=Age, y=fit, 
+           colour=Matrix, 
+           group=Matrix)) +
+  geom_line(size=1.5) 
+```
+]
+
+.pull-right[
+```{r "gamm-gg-4-out", ref.label="gamm-gg-4", echo=F, fig.height=14, out.width="100%"}
+```
+]
+
+---
+
+# GAMMs - plotting results
+
+.pull-left[
+```{r "gamm-gg-6", eval=FALSE}
+pred_data <- expand_grid(
+  Age = seq(0, 110, length.out = 200),
+  Matrix = seq(0, 40, by = .1)
+) %>% 
+  bind_cols(as_tibble(
+    predict(sim_data_gamm2$gam, 
+            newdata = ., 
+            terms = "s(Age):Matrix",
+            se.fit = TRUE)
+  ))
+
+ggplot(pred_data, 
+       aes(x=Age, y=fit, 
+           colour=Matrix,
+           group = Matrix)) + 
+  geom_line()
+```
+]
+
+.pull-right[
+```{r "gamm-gg-6-out", ref.label="gamm-gg-6", echo=F, fig.height=14, out.width="100%"}
+```
+]
+
+---
+
+
+<!-- ## Linear mixed models - Comparing models -->
+
+<!-- R tells us that the models are refitted with ML instead of REML. This is necessary for model comparison, and it's very handy that this is done for us, so we don't have to keep running models in parallell for comparisons.  -->
+
+<!-- You can now also see that the two models with the different ways of nesting have identical values, and give the same output. So now we know that.  -->
+
+<!-- The next question is, how do we know that any of these models are better than the null, i.e. that there is no relationship between body length and intelligence?  -->
+
+<!-- We should run a "null" model, and add this to the models comparisons table. -->
+
+<!-- **TASK:** Run the "null" model, check the QQ-plot, and add it to the model comparisons.   -->
+<!-- **HINT:** Formula to just calculate the intercept for a model (the null) is `y ~ 1 + (1|entity)`    -->
+
+<!-- --- -->
+
+<!-- ## Linear mixed models - Comparing models -->
+
+<!-- ```{r} -->
+<!-- sim_data_lme_null <- lmer(Hippocampus ~ 1 +  -->
+<!--                            (1|Interval)  + (1|Interval:site),  -->
+<!--                          data=sim_data) -->
+<!-- broom::tidy(sim_data_lme_null) %>%  -->
+<!--   knitr::kable(format="html") #<< -->
+<!-- ``` -->
+
+<!-- --- -->
+
+<!-- ## Linear mixed models - Comparing models -->
+<!-- .pull-left[ -->
+<!-- ```{r resid-4, eval=F}  -->
+<!-- qqnorm(resid(sim_data_lme_null)) -->
+<!-- qqline(resid(sim_data_lme_null)) -->
+<!-- ``` -->
+
+<!-- The last two models are actually identical, due to the way they have been set up. This tok me quite some time to understand, and is not so intuitive to me.  -->
+
+<!-- But because `siteUniq` is unique for each site, and we have `(1|Interval)` in the formula too, these actually become nested. Some prefer having this type of synatx, while for me it makesmore intuitive sense to state the nesting formulaeically with `(1|Interval) + (1|Interval:site)`. -->
+<!-- ] -->
+
+<!-- .pull-right[ -->
+<!-- ```{r resid-4-out, ref.label="resid-4", echo=F, warning=F} -->
+<!-- ``` -->
+<!-- ] -->
+
+<!-- --- -->
+
+<!-- ## Linear mixed models - Comparing models -->
+
+
+<!-- ```{r warning=FALSE} -->
+<!-- anova(sim_data_lme_null,  -->
+<!--       sim_data_lme_mountSnest) %>%  -->
+<!--   tidy() %>%  -->
+<!--   knitr::kable(format="html") #<< -->
+<!-- ``` -->
+
+<!-- --- -->
+
+<!-- ## Linear mixed models - Inspecting the fit -->
+<!-- .pull-left[ -->
+<!-- Lets have a look at our fit. Make a data.frame with the variable of interest, `Age`, spanning the time to predict in and run a prediction to get the fits. We also add a standard linear smooth and see if that is different. -->
+
+<!-- ```{r pred1, eval=F} -->
+<!-- predict_data$fit = predict( -->
+<!--   sim_data_lme_mountSnest,  -->
+<!--   newdata=predict_data,  -->
+<!--   re.form=NA) -->
+<!-- ggplot(sim_data,  -->
+<!--        aes(x=Age, y=Hippocampus)) +  -->
+<!--   geom_jitter(alpha=.2) + -->
+<!--   geom_smooth(method="lm") + -->
+<!--   geom_line(data=predict_data, -->
+<!--             colour="forestgreen", -->
+<!--             aes(y=fit)) -->
+<!-- ``` -->
+<!-- ] -->
+
+<!-- .pull-right[ -->
+<!-- ```{r pred1-out, ref.label="pred1", echo=F, warning=F} -->
+<!-- ``` -->
+<!-- ] -->
+
+<!-- --- -->
+
+
+---
+class: center
+# More resources on mixed models and GAM
+
+Julia Pilowski's [practical guide](https://www.juliapilowsky.com/2018/10/19/a-practical-guide-to-mixed-models-in-r/)
+
+Julie Silge's [modelling of salaries](https://juliasilge.com/blog/salary-gender/)  
+
+Bodo Winters' [tutorials and data](http://www.bodowinter.com/tutorials.html)  
+
+Page Paccini's [lme R-course](https://pagepiccinini.com/r-course/lesson-6-part-1-linear-mixed-effects-models/)  
+
+Jared Knowles' [getting started](https://www.jaredknowles.com/journal/2013/11/25/getting-started-with-mixed-effect-models-in-r)  
+
+B. Bolker's [mixed models in R](https://rpubs.com/bbolker/3336)  
+
+Gabriela Hadjuk's [introduction](https://gkhajduk.github.io/2017-03-09-mixed-models/)    
+
+Noam Ross' [GAMs in R](https://noamross.github.io/gams-in-r-course/)
+
+---
+class: center
+
+# Shameless self-promotion
+
+```{r out.width="80%", echo=F}
+knitr::include_url("https://drmowinckels.io", height = "415px")
+```
+
+[https://drmowinckels.io](https://drmowinckels.io)
