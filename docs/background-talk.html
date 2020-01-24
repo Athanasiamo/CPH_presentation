@@ -47,7 +47,25 @@ class: middle, right, title-slide
 
 ---
 
-# Lifespan research using cohorts
+# Mixed models in Lifespan research 
+
+&lt;img src="figures/meteyard_davies_2019_fig1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Meteyard &amp; Davies 
+&lt;i&gt;PsyArXiV&lt;/i&gt;, 2019, &lt;a href='https://psyarxiv.com/h3duq/'&gt;https://psyarxiv.com/h3duq/&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+The popularity of using mixed models is increasing.
+Here we see how the number of pubmed papers with linear mixed models increases yearly in psychological research, and this trend I'm pretty sure extends also to other fields.
+While mixed models as a consept is not new, the increasing power of computer and development of available tools is making it possible for more and more people to apply these methods to their data. 
+So we will look more into using mixed models in lifespan research, and the benefits of that.
+
+---
+
+# Doing science - the recipe
 
 .pull-left[
 ### Figure out a hypothesis
@@ -75,15 +93,13 @@ It's a little trickier that the books claim, there are issues people did not dis
 But you keep going, there will be cake.
 
 ---
-class: inverse, center, middle
+class: inverse, center
 
-**What they don't tell you**
+# What they don't tell you
 
-![](https://images-na.ssl-images-amazon.com/images/I/416YS3Qbz2L._SX425_.jpg)&lt;!-- --&gt;
-
+&lt;img src="https://images-na.ssl-images-amazon.com/images/I/416YS3Qbz2L._SX425_.jpg" width="65%" style="display: block; margin: auto;" /&gt;
 
 ??? 
-
 
 Well, it's not a complete lie.
 But the world is much more complex than the text books seem to tell us. 
@@ -105,11 +121,15 @@ Which is a data base with more than 2.500 participants, and over 4500 observatio
 ---
 class: inverse, center
 
-# Lifespan research using cohorts
+# Lifespan research
+&lt;div style="align: center"&gt;
+&lt;h1&gt; - using cohorts - &lt;/h1&gt;
+&lt;/div&gt;
+
 
 ---
 
-# Lifespan research using cohorts
+# Lifespan research - using cohorts
 
 ![](anims/cohort.gif)&lt;!-- --&gt;
 
@@ -122,7 +142,7 @@ This is not the simple relationship you thought of.
 
 ---
 
-# Lifespan research using cohorts
+# Lifespan research - using cohorts
 
 ![](background-talk_files/figure-html/cohort-3-1.png)&lt;!-- --&gt;
 
@@ -133,7 +153,7 @@ Is it just their age? Can we say that the difference between these two groups is
 
 ---
 
-# Lifespan research using cohorts
+# Lifespan research - using cohorts
 
 ![](background-talk_files/figure-html/cohort-age-groups-1.png)&lt;!-- --&gt;
 
@@ -146,7 +166,7 @@ And there is nothing wrong per se in splitting data up like this, I do this myse
 ---
 class: inverse
 
-# Lifespan research using cohorts
+# Lifespan research - using cohorts
 
 .pull-left[
 ## Number of cohorts
@@ -170,14 +190,14 @@ In fact, the power needed to find results is much higher in cohort studies as co
 ---
 class: center, inverse
 
-# Lifespan research with longitudinal data
+# Lifespan research
 &lt;div style="align: center"&gt;
-&lt;h1&gt; - linear models - &lt;/h1&gt;
+&lt;h1&gt; - longitudinal linear models - &lt;/h1&gt;
 &lt;/div&gt;
 
 ---
 
-# Lifespan research with longitudinal data - linear models
+# Lifespan research - longitudinal linear models 
 ![](background-talk_files/figure-html/long-lm-1.png)&lt;!-- --&gt;
 
 
@@ -193,7 +213,7 @@ Which in many studies is true, but not for this data.
 
 ---
 
-# Lifespan research with longitudinal data - linear models
+# Lifespan research - longitudinal linear models 
 ![](background-talk_files/figure-html/long-lm2-1.png)&lt;!-- --&gt;
 
 ???
@@ -207,7 +227,7 @@ And you want the studies to keep on going as long as possible, and for each new 
 
 ---
 
-# Lifespan research with longitudinal data - linear models
+# Lifespan research - longitudinal linear models 
 
 
 ![](background-talk_files/figure-html/lmm-fit-1.png)&lt;!-- --&gt;
@@ -227,14 +247,14 @@ It forces you to really reduce the data a lot, when what you have is so rich, an
 ---
 class: inverse, center
 
-# Lifespan research with longitudinal data
+# Lifespan research
 &lt;div style="align: center"&gt;
-&lt;h1&gt; - smoothing spline models - &lt;/h1&gt;
+&lt;h1&gt; - longitudinal smoothing spline models - &lt;/h1&gt;
 &lt;/div&gt;
 
 ---
 
-# Lifespan research using cohorts - smooth splines
+# Lifespan research - longitudinal smoothing spline
 
 ![](background-talk_files/figure-html/cohort-gam-1.png)&lt;!-- --&gt;
 
@@ -252,7 +272,7 @@ We know they are not.
 
 ---
 
-# Lifespan research with longitudinal data - smooth splines
+# Lifespan research - longitudinal smoothing spline
 
 ![](background-talk_files/figure-html/gam-vs-gamm-1.png)&lt;!-- --&gt;
 
@@ -274,32 +294,77 @@ class: inverse, center
 &lt;h1&gt; - literature examples - &lt;/h1&gt;
 &lt;/div&gt;
 
+???
+
+It should now not come as a suprise to you that there are lots of benefits from doing mixed models when you have longitudinal or repeated measures data.
+
 ---
 
-# Examples from lifespan research
+# Mixed models in lifespan research - examples
 
-&lt;img src="figures/fjell_2019b_fig1.png" width="100%" /&gt;
+### Figure 2
+&lt;img src="figures/fjell_sleep_2019_fig2.jpg" width="65%" style="display: block; margin: auto;" /&gt;
 
 &lt;div class="citation"&gt;
-Fjell et al. &lt;i&gt;Cerebral Cortex&lt;/i&gt;, Volume 29, Issue 9, September 2019,  
-Pages 3879–3890, &lt;a href='https://doi.org/10.1093/cercor/bhy266'&gt;https://doi.org/10.1093/cercor/bhy266&lt;/a&gt;
+Fjell et al. (2019)
+&lt;i&gt;Sleep&lt;/i&gt;,
+&lt;a href='https://doi.org/10.1093/sleep/zsz280'&gt;https://doi.org/10.1093/sleep/zsz280&lt;/a&gt;
 &lt;/div&gt;
 
 ???
 
-Surface area. Left panel: Clusters of coordinated SA in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+Relationships between age and hippocampal volume in Lifebrain. Left panel: GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). Dotted lines represent 95% CI. Right panel: Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample. x-Axis denotes age in years, y-axis hippocampal volume in mm3.
 
 
 
 ---
 
-# Examples from lifespan research
+# Mixed models in lifespan research - examples
+
+### Figure 9
+
+&lt;img src="figures/fjell_sleep_2019_fig9.png" width="58%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Fjell et al. (2019)
+&lt;i&gt;Sleep&lt;/i&gt;,
+&lt;a href='https://doi.org/10.1093/sleep/zsz280'&gt;https://doi.org/10.1093/sleep/zsz280&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+Figure 9. 
+Statistical power. The figure illustrates the superior power of the longitudinal design. The x-axis represents the size of PSQI × time (longitudinal) or PSQI × age interactions (cross-sectional). The y-axis represents statistical power. The dotted vertical line represents the observed effect size of the sleep efficiency × time interaction. As shown, the power to detect this is close to 1 (100%) with the longitudinal design, and very poor with the cross-sectional design.
+
+
+---
+
+# Mixed models in lifespan research - examples
+
+### Figure 1
+
+&lt;img src="figures/fjell_2019b_fig1.png" width="100%" /&gt;
+
+&lt;div class="citation"&gt;
+Fjell et al. (2019) &lt;i&gt;Cerebral Cortex&lt;/i&gt;, 
+&lt;a href='https://doi.org/10.1093/cercor/bhy266'&gt;https://doi.org/10.1093/cercor/bhy266&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+Surface area. Left panel: Clusters of coordinated surface area (SA) in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+
+---
+
+# Mixed models in lifespan research - examples
+
+### Figure 2
 
 &lt;img src="figures/fjell_2019b_fig2.png" width="100%" /&gt;
 
 &lt;div class="citation"&gt;
-Fjell et al. &lt;i&gt;Cerebral Cortex&lt;/i&gt;, Volume 29, Issue 9, September 2019,  
-Pages 3879–3890, &lt;a href='https://doi.org/10.1093/cercor/bhy266'&gt;https://doi.org/10.1093/cercor/bhy266&lt;/a&gt;
+Fjell et al. (2019) &lt;i&gt;Cerebral Cortex&lt;/i&gt;, 
+&lt;a href='https://doi.org/10.1093/cercor/bhy266'&gt;https://doi.org/10.1093/cercor/bhy266&lt;/a&gt;
 &lt;/div&gt;
 
 ???
@@ -308,13 +373,13 @@ Cortical thickness. Left panel: Clusters of coordinated cortical thickness in de
 
 ---
 
-# Examples from lifespan research
+# Mixed models in lifespan research - examples
 
-&lt;img src="figures/VidalPineiro_2019.jpg" width="75%" style="display: block; margin: auto;" /&gt;
+### Figure 1
+&lt;img src="figures/vidal-pineiro_2019.jpg" width="67%" style="display: block; margin: auto;" /&gt;
 
 &lt;div class="citation"&gt;
-Cellular correlates of cortical thinning throughout the lifespan
-Vidal-Piñeiro et al., bioRxiv doi: &lt;a href='https://doi.org/10.1101/585786'&gt;https://doi.org/10.1101/585786&lt;/a&gt;
+Vidal-Piñeiro et al. (2019) &lt;i&gt;bioRxiv&lt;/i&gt;, doi: &lt;a href='https://doi.org/10.1101/585786'&gt;https://doi.org/10.1101/585786&lt;/a&gt;
 &lt;/div&gt;
 
 ???
@@ -323,7 +388,7 @@ Trajectories of average cortical thickness. The upper and lower plots exhibit th
 
 ---
 
-# Examples from lifespan research
+# Mixed models in lifespan research - examples
 
 .pull-left[
 ### Figure 2
@@ -336,8 +401,9 @@ Trajectories of average cortical thickness. The upper and lower plots exhibit th
 ]
 
 &lt;div style="text-align: right; font-size: 12pt;"&gt;
-Fjell et al. 
-&lt;i&gt;Developmental Cognitive Neuroscience&lt;/i&gt;, Volume 40, December 2019, &lt;a href='https://doi.org/10.1016/j.dcn.2019.100723'&gt;https://doi.org/10.1016/j.dcn.2019.100723&lt;/a&gt;
+Fjell et al. (2019)
+&lt;i&gt;Developmental Cognitive Neuroscience&lt;/i&gt;,
+&lt;a href='https://doi.org/10.1016/j.dcn.2019.100723'&gt;https://doi.org/10.1016/j.dcn.2019.100723&lt;/a&gt;
 &lt;/div&gt;
 
 ???
@@ -348,43 +414,13 @@ Development of CVLT (left column) and CFT (right column) recall performance. The
 Fig. 3. Developmental trajectories for hippocampus.
 Structural maturation of hippocampal sub-regions. Top row shows microstructure (mean diffusion), bottom row shows volume.
 
-
 ---
 
-# Examples from lifespan research
+# Mixed models in lifespan research - examples
 
-&lt;img src="figures/fjell_sleep_2019_fig2.jpg" width="65%" style="display: block; margin: auto;" /&gt;
+### Figure 3
 
-&lt;div class="citation"&gt;
-Fjell et al. 
-&lt;i&gt;Sleep&lt;/i&gt;, November 2019, &lt;a href='https://doi.org/10.1093/sleep/zsz280'&gt;https://doi.org/10.1093/sleep/zsz280&lt;/a&gt;
-&lt;/div&gt;
-
-???
-
-Relationships between age and hippocampal volume in Lifebrain. Left panel: GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). Dotted lines represent 95% CI. Right panel: Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample. x-Axis denotes age in years, y-axis hippocampal volume in mm3.
-
----
-
-# Examples from lifespan research
-
-&lt;img src="figures/fjell_sleep_2019_fig9.png" width="65%" style="display: block; margin: auto;" /&gt;
-
-&lt;div class="citation"&gt;
-Fjell et al. 
-&lt;i&gt;Sleep&lt;/i&gt;, November 2019, &lt;a href='https://doi.org/10.1093/sleep/zsz280'&gt;https://doi.org/10.1093/sleep/zsz280&lt;/a&gt;
-&lt;/div&gt;
-
-???
-
-Figure 9. 
-Statistical power. The figure illustrates the superior power of the longitudinal design. The x-axis represents the size of PSQI × time (longitudinal) or PSQI × age interactions (cross-sectional). The y-axis represents statistical power. The dotted vertical line represents the observed effect size of the sleep efficiency × time interaction. As shown, the power to detect this is close to 1 (100%) with the longitudinal design, and very poor with the cross-sectional design.
-
----
-
-# Examples from lifespan research
-
-&lt;img src="figures/ferschmann_fig3.jpg" width="80%" style="display: block; margin: auto;" /&gt;
+&lt;img src="figures/ferschmann_fig3.jpg" width="70%" style="display: block; margin: auto;" /&gt;
 
 &lt;div class="citation"&gt;
 Freschmann et al. 

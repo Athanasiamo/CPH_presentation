@@ -1,9 +1,4 @@
 
-synth_group_data <- function(size, mean, sd){
-  
-  mapply()  
-}
-
 se <- function(x) (sd(x)/sqrt(length(x)))*1.96
 
 group_means <- function(data, x, y, funs = list(Mean = mean, SE = se)){
