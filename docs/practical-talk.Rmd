@@ -20,25 +20,58 @@ output:
 ```{r setup, include=FALSE, echo = FALSE}
 options(htmltools.dir.version = FALSE)
 library(knitr); library(kableExtra)
-library(gganimate); library(mgcv); library(nlme)
-library(tidyverse); library(broom);
-
-opts_chunk$set(echo = TRUE, fig.width = 16, fig.height = 12, cache = TRUE, 
+library(tidyverse); 
+opts_chunk$set(echo = TRUE, fig.width = 16, fig.height = 12,# cache = TRUE, 
                warning = FALSE, message = FALSE, dpi = 200)
 
 theme_set(theme_minimal(base_size = 25, base_line_size = 1, base_family = "Avenir"))
 load(here::here("data/sim_data.rda"))
 ```
 
-# Linear mixed models
+# Mixed models in Lifespan research 
+## Talk outline
 
-## Mixed models have many names, like our favourite pets:  
+.pull-left[
+**Practical talk**  
 
-### - hierarchical models  
-### - linear mixed models 
-### - linear mixed effects  
-### - multi-level models  
+- Mixed model packages in R  
+- Mixed model formula in R  
+- Running linear mixed models  
+- Running smoothing splines in mixed models   
+]
 
+--
+
+.pull-right[
+**Talk goals**
+
+- How to specify models    
+- How to inspect models  
+- How to summarise models  
+- How to plot model results  
+- How to compare models  
+]
+
+---
+# Mixed models
+
+.pull-left[
+**Have many names, like anything we love:**  
+
+- hierarchical models  
+- linear mixed models 
+- linear mixed effects  
+- multi-level models  
+]
+
+.pull-left[
+**Can also be extended with**
+
+- generalized models  
+- generalized additive models 
+- survival models   
+- Bayesian inference  
+]
 
 ???
 
@@ -131,9 +164,7 @@ Looking at the structure and relationships in the data helps us formulate a mode
 
 .pull-left[
 ```{r, eval=FALSE}
-library(mgcv) 
 library(tidyverse)
-library(broom)
 
 # Create a directory to place data in
 dir.create("data")
@@ -292,7 +323,7 @@ library(broom)
 # Run standard linear model
 sim_data_lm <- lm(
   Hippocampus ~ Age,
-  data=sim_data
+  data = sim_data
 )
 ```
 ```{r, eval=F}
@@ -422,6 +453,7 @@ Let's look at the original data again and see what it can be
 
 # Linear mixed models
 ```{r, echo=FALSE, fig.height=6.5, fig.align="center"}
+library(mgcv)
 m1 <- lm(Hippocampus ~ Age, data=sim_data)
 mm1 <- gamm(Hippocampus ~ Age, random = list(ID = ~1), data=sim_data)
 
@@ -561,9 +593,9 @@ sim_data %>%
               fill = "forestgreen",
               aes(ymin = fit-se.fit, 
                   ymax = fit+se.fit)) +
-    geom_line(data = pred_data,
-              colour = "forestgreen",
-              aes(y = fit))
+  geom_line(data = pred_data,
+            colour = "forestgreen",
+            aes(y = fit))
 ```
 ] 
 
@@ -644,7 +676,7 @@ plot(
 pred_data <- tibble(
   Age = seq(0, 110, length.out = 200),
   Matrix = 0
-  )
+)
 
 # Predict data using the pred_data, 
 # getting both fit and standard error
@@ -677,7 +709,7 @@ ggplot(pred_data, aes(x=Age, y=fit)) +
 ```{r "gamm-gg-4", eval=FALSE}
 # expand grid combines all elements
 # so all combinations are created
-pred_data <- expand_grid(
+sim_data_gamm2_pred <- expand_grid(
   Age = seq(0, 110, length.out = 200),
   Matrix = seq(0, 40, by = 1)
 ) %>% 
@@ -688,7 +720,7 @@ pred_data <- expand_grid(
   ))
 
 
-ggplot(pred_data, 
+ggplot(sim_data_gamm2_pred, 
        aes(x=Age, y=fit, 
            colour=Matrix, 
            group=Matrix)) +
@@ -707,7 +739,7 @@ ggplot(pred_data,
 
 .pull-left[
 ```{r "gamm-gg-6", eval=FALSE}
-pred_data <- expand_grid(
+sim_data_gamm2_predmat <- expand_grid(
   Age = seq(0, 110, length.out = 200),
   Matrix = seq(0, 40, by = .1)
 ) %>% 
@@ -718,9 +750,9 @@ pred_data <- expand_grid(
             se.fit = TRUE)
   ))
 
-ggplot(pred_data, 
-       aes(x=Age, y=fit, 
-           colour=Matrix,
+ggplot(sim_data_gamm2_predmat, 
+       aes(x = Age, y = fit, 
+           colour = Matrix,
            group = Matrix)) + 
   geom_line()
 ```
@@ -733,91 +765,161 @@ ggplot(pred_data,
 
 ---
 
-
-<!-- ## Linear mixed models - Comparing models -->
-
-<!-- R tells us that the models are refitted with ML instead of REML. This is necessary for model comparison, and it's very handy that this is done for us, so we don't have to keep running models in parallell for comparisons.  -->
-
-<!-- You can now also see that the two models with the different ways of nesting have identical values, and give the same output. So now we know that.  -->
-
-<!-- The next question is, how do we know that any of these models are better than the null, i.e. that there is no relationship between body length and intelligence?  -->
-
-<!-- We should run a "null" model, and add this to the models comparisons table. -->
-
-<!-- **TASK:** Run the "null" model, check the QQ-plot, and add it to the model comparisons.   -->
-<!-- **HINT:** Formula to just calculate the intercept for a model (the null) is `y ~ 1 + (1|entity)`    -->
-
-<!-- --- -->
-
-<!-- ## Linear mixed models - Comparing models -->
-
-<!-- ```{r} -->
-<!-- sim_data_lme_null <- lmer(Hippocampus ~ 1 +  -->
-<!--                            (1|Interval)  + (1|Interval:site),  -->
-<!--                          data=sim_data) -->
-<!-- broom::tidy(sim_data_lme_null) %>%  -->
-<!--   knitr::kable(format="html") #<< -->
-<!-- ``` -->
-
-<!-- --- -->
-
-<!-- ## Linear mixed models - Comparing models -->
-<!-- .pull-left[ -->
-<!-- ```{r resid-4, eval=F}  -->
-<!-- qqnorm(resid(sim_data_lme_null)) -->
-<!-- qqline(resid(sim_data_lme_null)) -->
-<!-- ``` -->
-
-<!-- The last two models are actually identical, due to the way they have been set up. This tok me quite some time to understand, and is not so intuitive to me.  -->
-
-<!-- But because `siteUniq` is unique for each site, and we have `(1|Interval)` in the formula too, these actually become nested. Some prefer having this type of synatx, while for me it makesmore intuitive sense to state the nesting formulaeically with `(1|Interval) + (1|Interval:site)`. -->
-<!-- ] -->
-
-<!-- .pull-right[ -->
-<!-- ```{r resid-4-out, ref.label="resid-4", echo=F, warning=F} -->
-<!-- ``` -->
-<!-- ] -->
-
-<!-- --- -->
-
-<!-- ## Linear mixed models - Comparing models -->
+# Mixed models - comparing models
 
 
-<!-- ```{r warning=FALSE} -->
-<!-- anova(sim_data_lme_null,  -->
-<!--       sim_data_lme_mountSnest) %>%  -->
-<!--   tidy() %>%  -->
-<!--   knitr::kable(format="html") #<< -->
-<!-- ``` -->
+???
+R tells us that the models are refitted with ML instead of REML. This is necessary for model comparison, and it's very handy that this is done for us, so we don't have to keep running models in parallell for comparisons.
 
-<!-- --- -->
+You can now also see that the two models with the different ways of nesting have identical values, and give the same output. So now we know that.
 
-<!-- ## Linear mixed models - Inspecting the fit -->
-<!-- .pull-left[ -->
-<!-- Lets have a look at our fit. Make a data.frame with the variable of interest, `Age`, spanning the time to predict in and run a prediction to get the fits. We also add a standard linear smooth and see if that is different. -->
+The next question is, how do we know that any of these models are better than the null, i.e. that there is no relationship between body length and intelligence?
 
-<!-- ```{r pred1, eval=F} -->
-<!-- predict_data$fit = predict( -->
-<!--   sim_data_lme_mountSnest,  -->
-<!--   newdata=predict_data,  -->
-<!--   re.form=NA) -->
-<!-- ggplot(sim_data,  -->
-<!--        aes(x=Age, y=Hippocampus)) +  -->
-<!--   geom_jitter(alpha=.2) + -->
-<!--   geom_smooth(method="lm") + -->
-<!--   geom_line(data=predict_data, -->
-<!--             colour="forestgreen", -->
-<!--             aes(y=fit)) -->
-<!-- ``` -->
-<!-- ] -->
+We should run a "null" model, and add this to the models comparisons table.
 
-<!-- .pull-right[ -->
-<!-- ```{r pred1-out, ref.label="pred1", echo=F, warning=F} -->
-<!-- ``` -->
-<!-- ] -->
+**TASK:** Run the "null" model, check the QQ-plot, and add it to the model comparisons.
+**HINT:** Formula to just calculate the intercept for a model (the null) is `y ~ 1 + (1|entity)`
 
-<!-- --- -->
+---
 
+# Mixed models - comparing models
+
+.pull-left[
+```{r}
+sim_data_lme_null <- 
+  lmer(Hippocampus ~ 
+         1 + (1|ID),
+       data=sim_data)
+```
+```{r, echo=FALSE}
+tidy(sim_data_lme_null) %>%
+  kable(format="html", digits=1) #<<
+```
+]
+
+.pull-right[
+```{r}
+sim_data_gamm_null <- 
+  gamm(Hippocampus ~ 1,
+       random = list(ID = ~ 1),
+       data=sim_data)
+```
+```{r, echo=FALSE}
+tidy(sim_data_gamm_null$gam, 
+     parametric = TRUE) %>%
+  kable(format="html", digits=1) #<<
+```
+]
+
+---
+
+# Mixed models - comparing models
+
+
+```{r, eval=FALSE}
+anova(
+  sim_data_gamm_null$lme,
+  sim_data_gamm$lme,
+  sim_data_gamm2$lme 
+)
+```
+
+```{r, echo=FALSE}
+tab <- anova(
+  sim_data_gamm_null$lme,
+  sim_data_gamm$lme,
+  sim_data_gamm2$lme 
+) %>%
+  select(-call)
+row.names(tab) <- NULL
+
+tab %>% 
+  mutate(formula = 
+           c(sim_data_gamm_null$gam$formula,
+             sim_data_gamm$gam$formula,
+             sim_data_gamm2$gam$formula)) %>% 
+  kable(format="html") #<<
+```
+
+---
+
+# Mixed models - comparing models
+
+```{r pred1, include = FALSE}
+pred_data <- expand_grid(
+  Age = seq(0, 110, length.out = 200)
+)
+
+fits <- list(
+  sim_data_lm = as_tibble(
+    predict(sim_data_lm, 
+            newdata = mutate(pred_data, ID = 1),
+            se.fit = TRUE)) %>% 
+    bind_cols(pred_data),
+  sim_data_gamm_null = as_tibble(
+    predict(sim_data_gamm_null$gam, 
+            newdata = pred_data,
+            se.fit = TRUE)) %>% 
+    bind_cols(pred_data),
+  sim_data_gamm = as_tibble(
+    predict(sim_data_gamm$gam, 
+            newdata = pred_data, 
+            se.fit = TRUE)) %>% 
+    bind_cols(pred_data),
+  sim_data_gamm2 = as_tibble(
+    predict(sim_data_gamm2$gam, 
+            newdata = mutate(pred_data, Matrix = 0),
+            se.fit = TRUE)
+  ) %>% 
+    bind_cols(pred_data)
+) %>% 
+  bind_rows(.id = "model")
+```
+
+.pull-left[
+```{r "fit-comp", eval=FALSE}
+ggplot(sim_data,
+       aes(x=Age)) +
+  geom_jitter(alpha=.2, aes( y=Hippocampus)) +
+    geom_ribbon(data=fits,alpha=.4,
+            aes(ymin=fit - se.fit, 
+                ymax=fit + se.fit, 
+                fill=model)) +
+    geom_line(data=fits,
+            aes(y=fit, colour=model))
+```
+]
+
+
+.pull-right[
+```{r fit-comp-out, ref.label="fit-comp", echo=F, warning=F}
+```
+]
+
+???
+Lets have a look at our fit. Make a data.frame with the variable of interest, `Age`, spanning the time to predict in and run a prediction to get the fits. We also add a standard linear smooth and see if that is different.
+
+---
+# Mixed models - our best model
+
+```{r out.width="50%", echo = FALSE, fig.height=13}
+ggplot(sim_data_gamm2_pred, 
+       aes(x=Age, y=fit, 
+           colour=Matrix, 
+           group=Matrix)) +
+  geom_line(size=1.5, 
+            show.legend = FALSE) +
+  labs(y = "Hippocampal volume",
+       title = "Hippocampal volume change by age")
+
+ggplot(sim_data_gamm2_predmat, 
+       aes(x = Age, y = fit, 
+           colour = Matrix,
+           group = Matrix)) + 
+  geom_line() +
+  labs(y = "",
+       title = "Modulated by matrix reasoning")
+```
 
 ---
 class: center
@@ -845,7 +947,7 @@ class: center
 # Shameless self-promotion
 
 ```{r out.width="80%", echo=F}
-knitr::include_url("https://drmowinckels.io", height = "415px")
+include_url("https://drmowinckels.io", height = "415px")
 ```
 
 [https://drmowinckels.io](https://drmowinckels.io)

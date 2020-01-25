@@ -23,6 +23,7 @@ class: middle, right, title-slide
 
 
 # Mixed models in Lifespan research 
+## Talk outlines
 
 .pull-left[
 **Background talk**  
@@ -34,6 +35,9 @@ class: middle, right, title-slide
 - Examples of mixed models applied in lifespan studies  
 ]
 
+???
+This first talk, I'll go through a little background on mixed models and how they can improve inference from repeated measures data, particularly longitudinal data.
+Both in terms of linear models, and also in terms of using smoothing splines for non-linear relationships
 --
 
 .pull-right[
@@ -44,6 +48,10 @@ class: middle, right, title-slide
 - Running linear mixed models  
 - Running smoothing splines in mixed models  
 ]
+
+???
+In the second talk we will go into the parciticalities.
+Covering more exactly how to specify, inspect and evaluate mixed models in R.
 
 ---
 
@@ -65,25 +73,30 @@ So we will look more into using mixed models in lifespan research, and the benef
 
 ---
 
-# Doing science - the recipe
+# Doing science
 
 .pull-left[
-### Figure out a hypothesis
-### Find a sample to test hypothesis
-### Run experiment
-### Run analyses
-### You have answers
-]
+**The recipe**  
 
---
-.pull-right[
-![](https://mrlokoblac.files.wordpress.com/2011/03/800px-portal_game_svg.png)&lt;!-- --&gt;
-] 
+- Figure out a hypothesis
+- Find a sample to test hypothesis
+- Run experiment
+- Run analyses
+- You have answers
+]
 
 ???
 When I was doing my BA, and also my Master's to some extent, I was presented with stories of doing research being quite straight forward.
 You follow these seemingly simple steps, and you get to do awesome research and find cool things.
 
+--
+.pull-right[
+**The obstacles**  
+
+![](https://mrlokoblac.files.wordpress.com/2011/03/800px-portal_game_svg.png)&lt;!-- --&gt;
+] 
+
+???
 Has anyone here played the puzzle game "Portal"? 
 It's a really challenging game of puzzles you need to solve, you are set in a type of experiment and you are told at the end of almost every level or puzzle that you just need to finish all the puzzles and then there will be cake.
 So you start off with low levels, thinking this isn't too hard, you'll soon get cake. 
@@ -97,9 +110,9 @@ class: inverse, center
 
 # What they don't tell you
 
-&lt;img src="https://images-na.ssl-images-amazon.com/images/I/416YS3Qbz2L._SX425_.jpg" width="65%" style="display: block; margin: auto;" /&gt;
+&lt;img src="https://images-na.ssl-images-amazon.com/images/I/416YS3Qbz2L._SX425_.jpg" width="60%" style="display: block; margin: auto;" /&gt;
 
-??? 
+???
 
 Well, it's not a complete lie.
 But the world is much more complex than the text books seem to tell us. 
@@ -108,10 +121,10 @@ Humans live their lives, and you are lucky if they participate in your study.
 So you take anyone wanting to join, and have to make some constrains to your design.
 
 ---
-
+class: center
 # All data synthesized using the LCBC data-base
 
-&lt;img src="https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png" width="75%" style="display: block; margin: auto;" /&gt;&lt;img src="https://www.sv.uio.no/psi/personer/vit/oyss/oystein-sorensen-foto-uio.jpg" width="12%" style="display: block; margin: auto;" /&gt;
+&lt;img src="https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png" width="72%" style="display: block; margin: auto;" /&gt;&lt;img src="https://www.sv.uio.no/psi/personer/vit/oyss/oystein-sorensen-foto-uio.jpg" width="12%" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -126,7 +139,10 @@ class: inverse, center
 &lt;h1&gt; - using cohorts - &lt;/h1&gt;
 &lt;/div&gt;
 
-
+???
+I'll begin walking through doing lifespan research using age cohorts.
+Something that is very often done, because that is the most convenient way of studying it.
+However, cohort studies have some _real_ limitations we need to think about, and they constrain the questions we are able to answer.
 ---
 
 # Lifespan research - using cohorts
@@ -146,10 +162,8 @@ This is not the simple relationship you thought of.
 
 ![](background-talk_files/figure-html/cohort-3-1.png)&lt;!-- --&gt;
 
-??? 
-
-Furthermore, what is the difference between these two cohorts?
-Is it just their age? Can we say that the difference between these two groups is due to age-related changes, or is it tangled together with the generational effects. They are born in completely different times, health care, education, and societal differences are all intertwined in there. 
+???
+Furthermore, what is the difference between these two cohorts? Is it just their age? Can we say that the difference between these two groups is due to age-related changes, or is it tangled together with the generational effects. They are born in completely different times, health care, education, and societal differences are all intertwined in there. 
 
 ---
 
@@ -161,7 +175,7 @@ Is it just their age? Can we say that the difference between these two groups is
 
 In many cases, when people have large samples like this, they'll split them up by age-groups, perhaps using breakpoints in the data.
 Here I did a rough grouping based on visual inspection only.
-And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age are opposite. 
+And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age being opposite. 
 
 ---
 class: inverse
@@ -276,7 +290,7 @@ We know they are not.
 
 ![](background-talk_files/figure-html/gam-vs-gamm-1.png)&lt;!-- --&gt;
 
-??? 
+???
  
 So when we look at the prediction, the fit, of the model using the information about observations belonging together, the curve changes.
 The change might not seem large here, but it makes a difference, and the line parsimoniously also _looks_ like it fits the data better.
@@ -313,7 +327,7 @@ Fjell et al. (2019)
 
 ???
 
-Relationships between age and hippocampal volume in Lifebrain. Left panel: GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). Dotted lines represent 95% CI. Right panel: Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample. x-Axis denotes age in years, y-axis hippocampal volume in mm3.
+Relationships between age and hippocampal volume in Lifebrain. **Left panel:** GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). Dotted lines represent 95% CI. **Right panel:** Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample. x-Axis denotes age in years, y-axis hippocampal volume in mm3.
 
 
 
@@ -352,7 +366,7 @@ Fjell et al. (2019) &lt;i&gt;Cerebral Cortex&lt;/i&gt;,
 
 ???
 
-Surface area. Left panel: Clusters of coordinated surface area (SA) in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+Surface area. **Left panel:** Clusters of coordinated surface area (SA) in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
 
 ---
 
@@ -369,7 +383,7 @@ Fjell et al. (2019) &lt;i&gt;Cerebral Cortex&lt;/i&gt;,
 
 ???
 
-Cortical thickness. Left panel: Clusters of coordinated cortical thickness in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters (see Fig. 1 legend for explanation). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+Cortical thickness. **Left panel:** Clusters of coordinated cortical thickness in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters (see Fig. 1 legend for explanation). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
 
 ---
 
@@ -408,10 +422,10 @@ Fjell et al. (2019)
 
 ???
 
-Fig. 2. Developmental trajectories for memory.
+**Fig. 2.** Developmental trajectories for memory.
 Development of CVLT (left column) and CFT (right column) recall performance. The plots in the bottom row show how performance in the 10 days retention interval recall condition improves when recall performance on the 30 min retention interval condition is accounted for.
 
-Fig. 3. Developmental trajectories for hippocampus.
+**Fig. 3.** Developmental trajectories for hippocampus.
 Structural maturation of hippocampal sub-regions. Top row shows microstructure (mean diffusion), bottom row shows volume.
 
 ---
@@ -429,7 +443,7 @@ Freschmann et al.
 
 ???
 
-Fig. 3. Cortical maturation for individuals with high and low prosociality. Individuals were classified as high prosocial if they consistently rated themselves as high on prosociality throughout the study, and as low prosocial if they consistently rated themselves as low (see Supporting Information (S2.4.3)). The plot shows mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. The fits were produced using the following model: thickness ∼ s(age, bs = ‘cr’) + sex by means of GAMM in R, bs = ‘cr’ refers to splines with cubic spline basis (Wood, 2006). Note that the low/high division was made for illustration purposes only, while the statistical analyses were run with prosocial behavior as a continuous measure.
+Fig. 3. Cortical maturation for individuals with high and low prosociality. Individuals were classified as high prosocial if they consistently rated themselves as high on prosociality throughout the study, and as low prosocial if they consistently rated themselves as low. The plot shows mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. The fits were produced using the following model: thickness ∼ s(age, bs = ‘cr’) + sex by means of GAMM in R, bs = ‘cr’ refers to splines with cubic spline basis. Note that the low/high division was made for illustration purposes only, while the statistical analyses were run with prosocial behavior as a continuous measure.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

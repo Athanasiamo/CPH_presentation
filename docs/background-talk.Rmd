@@ -18,8 +18,8 @@ output:
 ```{r setup, include=FALSE, echo = FALSE}
 options(htmltools.dir.version = FALSE)
 library(tidyverse); library(knitr); library(kableExtra)
-library(gganimate); library(mgcv); library(nlme)
-opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, cache = TRUE, 
+library(mgcv);
+opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, #cache = TRUE, 
                warning = FALSE, message = FALSE, dpi = 200)
 
 theme_set(theme_minimal(base_size = 20, base_line_size = 1, base_family = "Avenir"))
@@ -31,8 +31,7 @@ sim_data <- sim_data %>%
   ungroup() %>% 
   mutate(
     nn = row_number(),
-    Hippocampus = as.numeric(Hippocampus),
-    group = case_when(Age < 15 ~ "Development", Age > 70 ~ "Ageing", TRUE ~ "Adulthood" )
+    Hippocampus = as.numeric(Hippocampus)
   )
 
 limits_y <- c(min(sim_data$Hippocampus), max(sim_data$Hippocampus))
@@ -44,6 +43,7 @@ names(PAL) <- unique(sim_data$Age_group)
 
 
 # Mixed models in Lifespan research 
+## Talk outlines
 
 .pull-left[
 **Background talk**  
@@ -55,6 +55,9 @@ names(PAL) <- unique(sim_data$Age_group)
 - Examples of mixed models applied in lifespan studies  
 ]
 
+???
+This first talk, I'll go through a little background on mixed models and how they can improve inference from repeated measures data, particularly longitudinal data.
+Both in terms of linear models, and also in terms of using smoothing splines for non-linear relationships
 --
 
 .pull-right[
@@ -65,6 +68,10 @@ names(PAL) <- unique(sim_data$Age_group)
 - Running linear mixed models  
 - Running smoothing splines in mixed models  
 ]
+
+???
+In the second talk we will go into the parciticalities.
+Covering more exactly how to specify, inspect and evaluate mixed models in R.
 
 ---
 
@@ -88,27 +95,32 @@ So we will look more into using mixed models in lifespan research, and the benef
 
 ---
 
-# Doing science - the recipe
+# Doing science
 
 .pull-left[
-### Figure out a hypothesis
-### Find a sample to test hypothesis
-### Run experiment
-### Run analyses
-### You have answers
+**The recipe**  
+
+- Figure out a hypothesis
+- Find a sample to test hypothesis
+- Run experiment
+- Run analyses
+- You have answers
 ]
+
+???
+When I was doing my BA, and also my Master's to some extent, I was presented with stories of doing research being quite straight forward.
+You follow these seemingly simple steps, and you get to do awesome research and find cool things.
 
 --
 .pull-right[
+**The obstacles**  
+
 ```{r "portal"}
 knitr::include_graphics("https://mrlokoblac.files.wordpress.com/2011/03/800px-portal_game_svg.png")
 ```
 ] 
 
 ???
-When I was doing my BA, and also my Master's to some extent, I was presented with stories of doing research being quite straight forward.
-You follow these seemingly simple steps, and you get to do awesome research and find cool things.
-
 Has anyone here played the puzzle game "Portal"? 
 It's a really challenging game of puzzles you need to solve, you are set in a type of experiment and you are told at the end of almost every level or puzzle that you just need to finish all the puzzles and then there will be cake.
 So you start off with low levels, thinking this isn't too hard, you'll soon get cake. 
@@ -122,11 +134,11 @@ class: inverse, center
 
 # What they don't tell you
 
-```{r "liecake", out.width="65%", fig.align="center"}
+```{r "liecake", out.width="60%", fig.align="center"}
 knitr::include_graphics("https://images-na.ssl-images-amazon.com/images/I/416YS3Qbz2L._SX425_.jpg")
 ```
 
-??? 
+???
 
 Well, it's not a complete lie.
 But the world is much more complex than the text books seem to tell us. 
@@ -135,10 +147,10 @@ Humans live their lives, and you are lucky if they participate in your study.
 So you take anyone wanting to join, and have to make some constrains to your design.
 
 ---
-
+class: center
 # All data synthesized using the LCBC data-base
 
-```{r "lcbc-logo", out.width=c("75%","12%"), fig.align='center'}
+```{r "lcbc-logo", out.width=c("72%","12%"), fig.align='center'}
 include_graphics(c("https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wide_compact_full.png",
                    "https://www.sv.uio.no/psi/personer/vit/oyss/oystein-sorensen-foto-uio.jpg"))
 ```
@@ -156,7 +168,10 @@ class: inverse, center
 <h1> - using cohorts - </h1>
 </div>
 
-
+???
+I'll begin walking through doing lifespan research using age cohorts.
+Something that is very often done, because that is the most convenient way of studying it.
+However, cohort studies have some _real_ limitations we need to think about, and they constrain the questions we are able to answer.
 ---
 
 # Lifespan research - using cohorts
@@ -189,8 +204,7 @@ states <- list(
 )
 
 j <- lapply(states, 
-            function(x) sim_data %>% 
-              filter(Age_group %in% x)) %>% 
+            function(x) filter(sim_data, Age_group %in% x)) %>% 
   bind_rows(.id="appear2") %>% 
   mutate(appear2 = parse_number(appear2))
 
@@ -213,10 +227,8 @@ filter(j, appear2 == app) %>%
              aes(x=Age_Mean, y = Hippocampus_Mean))
 ```
 
-??? 
-
-Furthermore, what is the difference between these two cohorts?
-Is it just their age? Can we say that the difference between these two groups is due to age-related changes, or is it tangled together with the generational effects. They are born in completely different times, health care, education, and societal differences are all intertwined in there. 
+???
+Furthermore, what is the difference between these two cohorts? Is it just their age? Can we say that the difference between these two groups is due to age-related changes, or is it tangled together with the generational effects. They are born in completely different times, health care, education, and societal differences are all intertwined in there. 
 
 ---
 
@@ -235,7 +247,7 @@ sim_data %>%
 
 In many cases, when people have large samples like this, they'll split them up by age-groups, perhaps using breakpoints in the data.
 Here I did a rough grouping based on visual inspection only.
-And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age are opposite. 
+And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age being opposite. 
 
 ---
 class: inverse
@@ -269,6 +281,9 @@ class: center, inverse
 <h1> - longitudinal linear models - </h1>
 </div>
 
+???
+For now, I want to zoom in a bit on the adulthood group.
+I choose this because a linear model is not a bad fit for this data.
 ---
 
 # Lifespan research - longitudinal linear models 
@@ -283,8 +298,6 @@ sim_data %>%
 
 ???
 
-For now, I want to zoom in a bit on the adulthood group.
-I choose this because a linear model is not a bad fit for this data.
 You can tell by the data that there is some curvature to the data, but its not so much that a linear model will go very wrong.
 But I was asked to come and talk about lognitudinal data, not cohorts.
 So I've covered cohorts to show-case better what logitudinal studies bring to the table; the ability to actually say something about how people change, not only that there are differences between people of different ages. 
@@ -416,7 +429,7 @@ sim_data %>%
   geom_line(data = fit_data, aes(y=fit, group=method, colour=method), size=1) 
 ```
 
-??? 
+???
  
 So when we look at the prediction, the fit, of the model using the information about observations belonging together, the curve changes.
 The change might not seem large here, but it makes a difference, and the line parsimoniously also _looks_ like it fits the data better.
@@ -455,7 +468,7 @@ Fjell et al. (2019)
 
 ???
 
-Relationships between age and hippocampal volume in Lifebrain. Left panel: GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). Dotted lines represent 95% CI. Right panel: Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample. x-Axis denotes age in years, y-axis hippocampal volume in mm3.
+Relationships between age and hippocampal volume in Lifebrain. **Left panel:** GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). Dotted lines represent 95% CI. **Right panel:** Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample. x-Axis denotes age in years, y-axis hippocampal volume in mm3.
 
 
 
@@ -498,7 +511,7 @@ Fjell et al. (2019) <i>Cerebral Cortex</i>,
 
 ???
 
-Surface area. Left panel: Clusters of coordinated surface area (SA) in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+Surface area. **Left panel:** Clusters of coordinated surface area (SA) in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
 
 ---
 
@@ -517,7 +530,7 @@ Fjell et al. (2019) <i>Cerebral Cortex</i>,
 
 ???
 
-Cortical thickness. Left panel: Clusters of coordinated cortical thickness in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. Right panel: The life span trajectories of each cluster from the 3-cluster solution. Top: Trajectories residualized on age (x-axis). Bottom: The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters (see Fig. 1 legend for explanation). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+Cortical thickness. **Left panel:** Clusters of coordinated cortical thickness in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters (see Fig. 1 legend for explanation). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
 
 ---
 
@@ -562,10 +575,10 @@ Fjell et al. (2019)
 
 ???
 
-Fig. 2. Developmental trajectories for memory.
+**Fig. 2.** Developmental trajectories for memory.
 Development of CVLT (left column) and CFT (right column) recall performance. The plots in the bottom row show how performance in the 10 days retention interval recall condition improves when recall performance on the 30 min retention interval condition is accounted for.
 
-Fig. 3. Developmental trajectories for hippocampus.
+**Fig. 3.** Developmental trajectories for hippocampus.
 Structural maturation of hippocampal sub-regions. Top row shows microstructure (mean diffusion), bottom row shows volume.
 
 ---
@@ -585,4 +598,4 @@ Freschmann et al.
 
 ???
 
-Fig. 3. Cortical maturation for individuals with high and low prosociality. Individuals were classified as high prosocial if they consistently rated themselves as high on prosociality throughout the study, and as low prosocial if they consistently rated themselves as low (see Supporting Information (S2.4.3)). The plot shows mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. The fits were produced using the following model: thickness ∼ s(age, bs = ‘cr’) + sex by means of GAMM in R, bs = ‘cr’ refers to splines with cubic spline basis (Wood, 2006). Note that the low/high division was made for illustration purposes only, while the statistical analyses were run with prosocial behavior as a continuous measure.
+Fig. 3. Cortical maturation for individuals with high and low prosociality. Individuals were classified as high prosocial if they consistently rated themselves as high on prosociality throughout the study, and as low prosocial if they consistently rated themselves as low. The plot shows mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. The fits were produced using the following model: thickness ∼ s(age, bs = ‘cr’) + sex by means of GAMM in R, bs = ‘cr’ refers to splines with cubic spline basis. Note that the low/high division was made for illustration purposes only, while the statistical analyses were run with prosocial behavior as a continuous measure.

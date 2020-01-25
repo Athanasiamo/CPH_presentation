@@ -23,15 +23,50 @@ class: middle, right, title-slide
 
 
 
-# Linear mixed models
+# Mixed models in Lifespan research 
+## Talk outline
 
-## Mixed models have many names, like our favourite pets:  
+.pull-left[
+**Practical talk**  
 
-### - hierarchical models  
-### - linear mixed models 
-### - linear mixed effects  
-### - multi-level models  
+- Mixed model packages in R  
+- Mixed model formula in R  
+- Running linear mixed models  
+- Running smoothing splines in mixed models   
+]
 
+--
+
+.pull-right[
+**Talk goals**
+
+- How to specify models    
+- How to inspect models  
+- How to summarise models  
+- How to plot model results  
+- How to compare models  
+]
+
+---
+# Mixed models
+
+.pull-left[
+Have many names, like our favourite pets:  
+
+## - hierarchical models  
+## - linear mixed models 
+## - linear mixed effects  
+## - multi-level models  
+]
+
+.pull-left[
+Can also be extended with
+
+## - generalized models  
+## - generalized additive models 
+## - survival models   
+## - Bayesian inference  
+]
 
 ???
 
@@ -128,9 +163,7 @@ Looking at the structure and relationships in the data helps us formulate a mode
 .pull-left[
 
 ```r
-library(mgcv) 
 library(tidyverse)
-library(broom)
 
 # Create a directory to place data in
 dir.create("data")
@@ -301,7 +334,7 @@ library(broom)
 # Run standard linear model
 sim_data_lm &lt;- lm(
   Hippocampus ~ Age,
-  data=sim_data
+  data = sim_data
 )
 ```
 
@@ -327,16 +360,16 @@ tidy(sim_data_lm)
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8677.8752 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 38.6771 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 224.3670 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8538.8552 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37.4969 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 227.7216 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Age &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -15.7113 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9572 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -16.4141 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -12.6765 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9440 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -13.4291 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -610,9 +643,9 @@ sim_data %&gt;%
               fill = "forestgreen",
               aes(ymin = fit-se.fit, 
                   ymax = fit+se.fit)) +
-    geom_line(data = pred_data,
-              colour = "forestgreen",
-              aes(y = fit))
+  geom_line(data = pred_data,
+            colour = "forestgreen",
+            aes(y = fit))
 ```
 ] 
 
@@ -715,7 +748,7 @@ plot(
 pred_data &lt;- tibble(
   Age = seq(0, 110, length.out = 200),
   Matrix = 0
-  )
+)
 
 # Predict data using the pred_data, 
 # getting both fit and standard error
@@ -747,7 +780,7 @@ ggplot(pred_data, aes(x=Age, y=fit)) +
 ```r
 # expand grid combines all elements
 # so all combinations are created
-pred_data &lt;- expand_grid(
+sim_data_gamm2_pred &lt;- expand_grid(
   Age = seq(0, 110, length.out = 200),
   Matrix = seq(0, 40, by = 1)
 ) %&gt;% 
@@ -758,7 +791,7 @@ pred_data &lt;- expand_grid(
   ))
 
 
-ggplot(pred_data, 
+ggplot(sim_data_gamm2_pred, 
        aes(x=Age, y=fit, 
            colour=Matrix, 
            group=Matrix)) +
@@ -777,7 +810,7 @@ ggplot(pred_data,
 .pull-left[
 
 ```r
-pred_data &lt;- expand_grid(
+sim_data_gamm2_predmat &lt;- expand_grid(
   Age = seq(0, 110, length.out = 200),
   Matrix = seq(0, 40, by = .1)
 ) %&gt;% 
@@ -788,9 +821,9 @@ pred_data &lt;- expand_grid(
             se.fit = TRUE)
   ))
 
-ggplot(pred_data, 
-       aes(x=Age, y=fit, 
-           colour=Matrix,
+ggplot(sim_data_gamm2_predmat, 
+       aes(x = Age, y = fit, 
+           colour = Matrix,
            group = Matrix)) + 
   geom_line()
 ```
@@ -802,91 +835,197 @@ ggplot(pred_data,
 
 ---
 
-
-&lt;!-- ## Linear mixed models - Comparing models --&gt;
-
-&lt;!-- R tells us that the models are refitted with ML instead of REML. This is necessary for model comparison, and it's very handy that this is done for us, so we don't have to keep running models in parallell for comparisons.  --&gt;
-
-&lt;!-- You can now also see that the two models with the different ways of nesting have identical values, and give the same output. So now we know that.  --&gt;
-
-&lt;!-- The next question is, how do we know that any of these models are better than the null, i.e. that there is no relationship between body length and intelligence?  --&gt;
-
-&lt;!-- We should run a "null" model, and add this to the models comparisons table. --&gt;
-
-&lt;!-- **TASK:** Run the "null" model, check the QQ-plot, and add it to the model comparisons.   --&gt;
-&lt;!-- **HINT:** Formula to just calculate the intercept for a model (the null) is `y ~ 1 + (1|entity)`    --&gt;
-
-&lt;!-- --- --&gt;
-
-&lt;!-- ## Linear mixed models - Comparing models --&gt;
-
-&lt;!-- ```{r} --&gt;
-&lt;!-- sim_data_lme_null &lt;- lmer(Hippocampus ~ 1 +  --&gt;
-&lt;!--                            (1|Interval)  + (1|Interval:site),  --&gt;
-&lt;!--                          data=sim_data) --&gt;
-&lt;!-- broom::tidy(sim_data_lme_null) %&gt;%  --&gt;
-&lt;!--   knitr::kable(format="html") #&lt;&lt; --&gt;
-&lt;!-- ``` --&gt;
-
-&lt;!-- --- --&gt;
-
-&lt;!-- ## Linear mixed models - Comparing models --&gt;
-&lt;!-- .pull-left[ --&gt;
-&lt;!-- ```{r resid-4, eval=F}  --&gt;
-&lt;!-- qqnorm(resid(sim_data_lme_null)) --&gt;
-&lt;!-- qqline(resid(sim_data_lme_null)) --&gt;
-&lt;!-- ``` --&gt;
-
-&lt;!-- The last two models are actually identical, due to the way they have been set up. This tok me quite some time to understand, and is not so intuitive to me.  --&gt;
-
-&lt;!-- But because `siteUniq` is unique for each site, and we have `(1|Interval)` in the formula too, these actually become nested. Some prefer having this type of synatx, while for me it makesmore intuitive sense to state the nesting formulaeically with `(1|Interval) + (1|Interval:site)`. --&gt;
-&lt;!-- ] --&gt;
-
-&lt;!-- .pull-right[ --&gt;
-&lt;!-- ```{r resid-4-out, ref.label="resid-4", echo=F, warning=F} --&gt;
-&lt;!-- ``` --&gt;
-&lt;!-- ] --&gt;
-
-&lt;!-- --- --&gt;
-
-&lt;!-- ## Linear mixed models - Comparing models --&gt;
+# Mixed models - comparing models
 
 
-&lt;!-- ```{r warning=FALSE} --&gt;
-&lt;!-- anova(sim_data_lme_null,  --&gt;
-&lt;!--       sim_data_lme_mountSnest) %&gt;%  --&gt;
-&lt;!--   tidy() %&gt;%  --&gt;
-&lt;!--   knitr::kable(format="html") #&lt;&lt; --&gt;
-&lt;!-- ``` --&gt;
+???
+R tells us that the models are refitted with ML instead of REML. This is necessary for model comparison, and it's very handy that this is done for us, so we don't have to keep running models in parallell for comparisons.
 
-&lt;!-- --- --&gt;
+You can now also see that the two models with the different ways of nesting have identical values, and give the same output. So now we know that.
 
-&lt;!-- ## Linear mixed models - Inspecting the fit --&gt;
-&lt;!-- .pull-left[ --&gt;
-&lt;!-- Lets have a look at our fit. Make a data.frame with the variable of interest, `Age`, spanning the time to predict in and run a prediction to get the fits. We also add a standard linear smooth and see if that is different. --&gt;
+The next question is, how do we know that any of these models are better than the null, i.e. that there is no relationship between body length and intelligence?
 
-&lt;!-- ```{r pred1, eval=F} --&gt;
-&lt;!-- predict_data$fit = predict( --&gt;
-&lt;!--   sim_data_lme_mountSnest,  --&gt;
-&lt;!--   newdata=predict_data,  --&gt;
-&lt;!--   re.form=NA) --&gt;
-&lt;!-- ggplot(sim_data,  --&gt;
-&lt;!--        aes(x=Age, y=Hippocampus)) +  --&gt;
-&lt;!--   geom_jitter(alpha=.2) + --&gt;
-&lt;!--   geom_smooth(method="lm") + --&gt;
-&lt;!--   geom_line(data=predict_data, --&gt;
-&lt;!--             colour="forestgreen", --&gt;
-&lt;!--             aes(y=fit)) --&gt;
-&lt;!-- ``` --&gt;
-&lt;!-- ] --&gt;
+We should run a "null" model, and add this to the models comparisons table.
 
-&lt;!-- .pull-right[ --&gt;
-&lt;!-- ```{r pred1-out, ref.label="pred1", echo=F, warning=F} --&gt;
-&lt;!-- ``` --&gt;
-&lt;!-- ] --&gt;
+**TASK:** Run the "null" model, check the QQ-plot, and add it to the model comparisons.
+**HINT:** Formula to just calculate the intercept for a model (the null) is `y ~ 1 + (1|entity)`
 
-&lt;!-- --- --&gt;
+---
 
+# Mixed models - comparing models
+
+.pull-left[
+
+```r
+sim_data_lme_null &lt;- 
+  lmer(Hippocampus ~ 
+         1 + (1|ID),
+       data=sim_data)
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; group &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8137.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 287 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; fixed &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sd_(Intercept).ID &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 867.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ID &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sd_Observation.Residual &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 259.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Residual &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+.pull-right[
+
+```r
+sim_data_gamm_null &lt;- 
+  gamm(Hippocampus ~ 1,
+       random = list(ID = ~ 1),
+       data=sim_data)
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8137.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 287.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+
+# Mixed models - comparing models
+
+
+
+```r
+anova(
+  sim_data_gamm_null$lme,
+  sim_data_gamm$lme,
+  sim_data_gamm2$lme 
+)
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Model &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; AIC &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; BIC &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; logLik &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Test &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; L.Ratio &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p-value &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; formula &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25144.35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25160.48 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -12569.18 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Hippocampus ~ 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23617.37 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23644.26 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11803.69 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1 vs 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1530.98032 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Hippocampus ~ s(Age) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23611.92 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23654.93 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11797.96 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2 vs 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11.45666 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0094963 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Hippocampus ~ s(Age) + s(Age, by = Matrix) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Mixed models - comparing models
+
+
+
+.pull-left[
+
+```r
+ggplot(sim_data,
+       aes(x=Age)) +
+  geom_jitter(alpha=.2, aes( y=Hippocampus)) +
+    geom_ribbon(data=fits,alpha=.4,
+            aes(ymin=fit - se.fit, 
+                ymax=fit + se.fit, 
+                fill=model)) +
+    geom_line(data=fits,
+            aes(y=fit, colour=model))
+```
+]
+
+
+.pull-right[
+![](practical-talk_files/figure-html/fit-comp-out-1.png)&lt;!-- --&gt;
+]
+
+???
+Lets have a look at our fit. Make a data.frame with the variable of interest, `Age`, spanning the time to predict in and run a prediction to get the fits. We also add a standard linear smooth and see if that is different.
+
+---
+# Mixed models - our best model
+
+&lt;img src="practical-talk_files/figure-html/unnamed-chunk-29-1.png" width="50%" /&gt;&lt;img src="practical-talk_files/figure-html/unnamed-chunk-29-2.png" width="50%" /&gt;
 
 ---
 class: center
