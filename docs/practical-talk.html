@@ -51,21 +51,21 @@ class: middle, right, title-slide
 # Mixed models
 
 .pull-left[
-Have many names, like our favourite pets:  
+**Have many names, like anything we love:**  
 
-## - hierarchical models  
-## - linear mixed models 
-## - linear mixed effects  
-## - multi-level models  
+- hierarchical models  
+- linear mixed models 
+- linear mixed effects  
+- multi-level models  
 ]
 
 .pull-left[
-Can also be extended with
+**Can also be extended with**
 
-## - generalized models  
-## - generalized additive models 
-## - survival models   
-## - Bayesian inference  
+- generalized models  
+- generalized additive models 
+- survival models   
+- Bayesian inference  
 ]
 
 ???
@@ -204,14 +204,14 @@ We will be using the dataset I used in my previous talk to highlight some aspect
 ## # A tibble: 8 x 4
 ##   ID     Time Hippocampus Matrix
 ##   &lt;fct&gt; &lt;int&gt;       &lt;dbl&gt;  &lt;dbl&gt;
-## 1 1         1       7700    27.3
-## 2 2         1      10107.   29.6
-## 3 2         2      10065.   32.6
-## 4 3         1       8604.   33.3
-## 5 4         1       8995.   21.7
-## 6 4         2       8728.   19.7
-## 7 5         1       8017    32.5
-## 8 5         2       7967.   28.8
+## 1 1         1       6566.   24.5
+## 2 2         1       8081.   22.0
+## 3 3         1       8209.   28.5
+## 4 3         2       8181.   25.4
+## 5 3         3       8123.   24.3
+## 6 4         1       8075.   26.8
+## 7 5         1       6732.   26.2
+## 8 6         1       9067.   21.0
 ```
 
 ]
@@ -220,14 +220,15 @@ We will be using the dataset I used in my previous talk to highlight some aspect
 ### Wide data
 
 ```
-## # A tibble: 5 x 5
-##   ID    Hippocampus_1 Hippocampus_2 Matrix_1 Matrix_2
-##   &lt;fct&gt;         &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1 1             7700            NA      27.3     NA  
-## 2 2            10107.        10065.     29.6     32.6
-## 3 3             8604.           NA      33.3     NA  
-## 4 4             8995.         8728.     21.7     19.7
-## 5 5             8017          7967.     32.5     28.8
+## # A tibble: 6 x 7
+##   ID    Hippocampus_1 Hippocampus_2 Hippocampus_3 Matrix_1 Matrix_2 Matrix_3
+##   &lt;fct&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1 1             6566.           NA            NA      24.5     NA       NA  
+## 2 2             8081.           NA            NA      22.0     NA       NA  
+## 3 3             8209.         8181.         8123.     28.5     25.4     24.3
+## 4 4             8075.           NA            NA      26.8     NA       NA  
+## 5 5             6732.           NA            NA      26.2     NA       NA  
+## 6 6             9067.           NA            NA      21.0     NA       NA
 ```
 ]
 
@@ -360,16 +361,16 @@ tidy(sim_data_lm)
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8538.8552 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 37.4969 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 227.7216 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8512.208 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38.2634 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 222.4635 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Age &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -12.6765 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9440 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -13.4291 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11.200 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9877 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11.3393 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -452,28 +453,28 @@ tidy(sim_data_lme)
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8419.5328 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 44.8989 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 187.5218 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8368.7379 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 46.2345 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 181.0065 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; fixed &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Age &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -8.9252 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.1306 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -7.8945 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -6.8942 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1616 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -5.9351 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; fixed &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; sd_(Intercept).ID &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 825.2842 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 847.8452 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; ID &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; sd_Observation.Residual &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 266.8601 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 275.4828 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Residual &lt;/td&gt;
@@ -553,9 +554,9 @@ tidy(sim_data_gamm$gam)
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; s(Age) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8.922 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8.922 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 481.9127 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9082 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9082 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 552.249 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -686,17 +687,17 @@ tidy(sim_data_gamm2$gam)
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; s(Age) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8.9229 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8.9229 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 486.3636 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9083 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9083 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 544.7876 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.0000 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; s(Age):Matrix &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2.0000 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2.0000 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.7548 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0032 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2313 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7936 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -821,8 +822,9 @@ sim_data_gamm2_predmat &lt;- expand_grid(
             se.fit = TRUE)
   ))
 
-ggplot(sim_data_gamm2_predmat, 
-       aes(x = Age, y = fit, 
+sim_data_gamm2_predmat %&gt;% 
+  filter(Matrix == 1) %&gt;% 
+ggplot(aes(x = Age, y = fit, 
            colour = Matrix,
            group = Matrix)) + 
   geom_line()
@@ -875,21 +877,21 @@ sim_data_lme_null &lt;-
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8137.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 28.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 287 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8149.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 283.5 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; fixed &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; sd_(Intercept).ID &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 867.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 878.7 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; ID &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; sd_Observation.Residual &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 259.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 268.2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Residual &lt;/td&gt;
@@ -919,9 +921,9 @@ sim_data_gamm_null &lt;-
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8137.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 28.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 287.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8149.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 283.5 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -960,9 +962,9 @@ anova(
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 25144.35 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 25160.48 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -12569.18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25013.21 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25029.32 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -12503.61 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
@@ -971,23 +973,23 @@ anova(
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 23617.37 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 23644.26 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -11803.69 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23434.56 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23461.40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11712.28 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; 1 vs 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1530.98032 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1582.652562 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Hippocampus ~ s(Age) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 23611.92 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 23654.93 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -11797.96 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23440.10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23483.04 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11712.05 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; 2 vs 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 11.45666 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0094963 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.462294 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9270936 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Hippocampus ~ s(Age) + s(Age, by = Matrix) &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;

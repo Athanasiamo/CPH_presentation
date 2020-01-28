@@ -43,11 +43,18 @@ p <- ggplot(j, aes(x=Age, y=Hippocampus))  +
              aes(x=Age_Mean, y = Hippocampus_Mean, 
                  colour=Age_group)) +
   geom_line(data=jm, inherit.aes = FALSE, 
-            aes(x=Age_Mean, y = Hippocampus_Mean))
+            aes(x=Age_Mean, y = Hippocampus_Mean)) +
+  theme(panel.background = element_blank(),
+        plot.background = element_blank(),
+        legend.background = element_blank(),
+        legend.box.background = element_blank()) #+
+  # labs(x="Age", y=bquote(Hippocampus~volume~(mm^{3})),
+       # colour="Age bin")
 
 p2 <- p +
   transition_time(appear2) +
   enter_grow()
-p3 <- animate(p2, nframes = 700, end_pause = 50, start_pause = 35, duration = 90, width = 16, height = 6.5, units = "in", res=100)
+p3 <- animate(p2, nframes = 700, end_pause = 30, start_pause = 20, 
+              duration = 60, width = 16, height = 6.5, units = "in", res=100)
 
-anim_save(filename = "cohort.gif", path = "docs/anims")
+anim_save(animation = p3, filename = "cohort.gif", path = "docs/anims")

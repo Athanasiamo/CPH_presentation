@@ -25,6 +25,15 @@ opts_chunk$set(echo = TRUE, fig.width = 16, fig.height = 12,# cache = TRUE,
                warning = FALSE, message = FALSE, dpi = 200)
 
 theme_set(theme_minimal(base_size = 25, base_line_size = 1, base_family = "Avenir"))
+pal <- c("#f7ec48", "goldenrod", "#3f3f3f")
+
+scale_colour_continuous <- function(...) {
+  scale_colour_gradientn(colours = pal, ...)
+}
+scale_colour_discrete <- function(...) {
+  discrete_scale("colour", "brewer", colorRampPalette(pal), ...)
+}
+
 load(here::here("data/sim_data.rda"))
 ```
 
@@ -477,8 +486,7 @@ sim_data %>%
   geom_ribbon(data = fit_data, alpha=.3,
               aes(ymin=fit-se, ymax=fit+se, group=method, fill=method)) +
   geom_line(data = fit_data, aes(y=fit, group=method, colour=method), size=1) +
-  geom_smooth(aes(group="gam", colour="gam", fill="gam")) +
-  scale_colour_manual(values=c("goldenrod", "yellow", "black"), aesthetics = c("fill","colour"))
+  geom_smooth(aes(group="gam", colour="gam", fill="gam"))
 ```
 
 ???
@@ -750,8 +758,9 @@ sim_data_gamm2_predmat <- expand_grid(
             se.fit = TRUE)
   ))
 
-ggplot(sim_data_gamm2_predmat, 
-       aes(x = Age, y = fit, 
+sim_data_gamm2_predmat %>% 
+  filter(Matrix == 1) %>% 
+ggplot(aes(x = Age, y = fit, 
            colour = Matrix,
            group = Matrix)) + 
   geom_line()

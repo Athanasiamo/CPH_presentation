@@ -8,7 +8,7 @@ a {
 
 .remark-slide-content {
   background-color: #FAFAFA;
-  background-image: url(http://folk.uio.no/athanasm/Lifebrain/Lifebrain_logo_bw_rev.png), url(http://folk.uio.no/athanasm/Lifebrain/flag_yellow_high_eu.jpg);
+  background-image: url(./figures/lifebrain_black.svg), url(http://folk.uio.no/athanasm/Lifebrain/flag_yellow_high_eu.jpg);
   background-position: 15% 95%, 2% 95%;
   background-size: auto 10%, auto 10%;
   border-top: 100px solid #f7ec48;
@@ -18,14 +18,22 @@ a {
   padding: 1em 2em 1em 2em
 }
 
-.title-slide .inverse .remark-slide-content {
+
+.title-slide .remark-slide-content {
   background-color: #FAFAFA;
 }
 
 .inverse {
-  background-color: #000000;
+  border-top: 100px solid #000;
+  background-color: #f7ec48;
   text-shadow: none;
-  color: #fff;
+  color: #000;
+}
+
+.dark {
+  background-image: url(./figures/lifebrain_white.svg), url(http://folk.uio.no/athanasm/Lifebrain/flag_yellow_high_eu.jpg);
+  background-color: #000;
+  color: #FAFAFA;
 }
 
 .title-slide {
@@ -44,15 +52,15 @@ a {
   color: #1A292C;
 }
 
-/*.remark-slide-content > inverse {
-width: 112px;
-height: 47px;
-border-bottom: 1px solid black;
-position: absolute;
-}*/
-
 /* Removes colored bar from top of the slide resulting in a clear slide */
 .clear{
+  border-top: none;
+  background-image: none;
+  background-position: none;
+  background-size: none;
+}
+
+.noborder{
   border-top: none;
 }
 
@@ -66,6 +74,7 @@ position: absolute;
   margin-left: 00px;
   margin-bottom: -10px;
 }
+
 
 .remark-slide-content > h2, .pull-left > h2, .pull-right > h2 {
   font-size: 35px;
@@ -119,21 +128,30 @@ position: absolute;
   opacity: 1;
 }
 
-.inverse .remark-slide-number {
-  font-size: 13pt;
-  font-family: 'Fira Sans';
-  color: #FFF;
-  opacity: 1;
-}
-
 .citation{
  text-align: right; 
  font-size: 12pt;
 }
 
-.inverse h2, .inverse h3 {
-  color: #FFF;
+.dark .middle h1 {
+  color: #FAFAFA;
 }
+
+.dark h1 {
+  color: #000;
+}
+
+.dark h2, .dark h3, .dark h4, .dark .remark-slide-number {
+  color: #FAFAFA;
+}
+
+.inverse h1 {
+  color: #FAFAFA;
+} 
+
+.inverse h2, .inverse h3, .inverse h4 {
+  color: #000;
+} 
 
 /* turns off slide numbers for title page: https://github.com/gnab/remark/issues/298 */
 .title-slide .remark-slide-number {
@@ -145,4 +163,8 @@ position: absolute;
   background: #e7e8e2; /* darker */
   border-radius: 3px;
   padding: 4px;
+}
+
+.center > h2, h3, h4 {
+  text-align: center;
 }

@@ -55,24 +55,6 @@ Covering more exactly how to specify, inspect and evaluate mixed models in R.
 
 ---
 
-# Mixed models in Lifespan research 
-
-&lt;img src="figures/meteyard_davies_2019_fig1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
-&lt;div class="citation"&gt;
-Meteyard &amp; Davies 
-&lt;i&gt;PsyArXiV&lt;/i&gt;, 2019, &lt;a href='https://psyarxiv.com/h3duq/'&gt;https://psyarxiv.com/h3duq/&lt;/a&gt;
-&lt;/div&gt;
-
-???
-
-The popularity of using mixed models is increasing.
-Here we see how the number of pubmed papers with linear mixed models increases yearly in psychological research, and this trend I'm pretty sure extends also to other fields.
-While mixed models as a consept is not new, the increasing power of computer and development of available tools is making it possible for more and more people to apply these methods to their data. 
-So we will look more into using mixed models in lifespan research, and the benefits of that.
-
----
-
 # Doing science
 
 .pull-left[
@@ -106,7 +88,7 @@ It's a little trickier that the books claim, there are issues people did not dis
 But you keep going, there will be cake.
 
 ---
-class: inverse, center
+class: dark, center
 
 # What they don't tell you
 
@@ -121,6 +103,83 @@ Humans live their lives, and you are lucky if they participate in your study.
 So you take anyone wanting to join, and have to make some constrains to your design.
 
 ---
+
+# Human lifespan research
+
+--
+
+.pull-left[
+## What do we want to know?
+
+- How are we different at different ages?  
+
+- How do we develop?  
+
+- How do we age?  
+ 
+- Who will develop diseases like dementia?  
+]
+
+--
+.pull-left[
+## How do we study that?
+- Sampling a wide age range
+
+- Population-based studies  
+
+- Registry studies  
+ 
+- Longitudinal studies 
+]
+
+???
+What are the key consepts we want out of Lifespan research, what are the general questions people want answered?
+But, a search on Pubmed for _human lifespan_ gave me 45993 results, but they mostly seem to discuss the expansion of human life, not the study of human lifespan differences per se. 
+Searching for _Lifespan trajectory_ gave me only 856 results, many of which are animal studies.
+
+---
+
+# Lifespan studies on humans
+
+- [LCBC studies](https://www.oslobrains.no/)  
+
+- [Betula - Aging, memory, and dementia](https://www.umu.se/en/research/projects/betula---aging-memory-and-dementia/)  
+
+- [HCP lifespan](https://www.humanconnectome.org/lifespan-studies)  
+
+- [Dallas Lifespan Brain Study](http://lodismith.canisiuspsychology.net/studies/dlbs/)  
+
+- [Southwest University Adult Lifespan Dataset](http://fcon_1000.projects.nitrc.org/indi/retro/sald.html)  
+
+- [The Rhineland study](https://www.neurodegenerationresearch.eu/it/cohort/the-rhineland-study/)  
+
+
+???
+So lifespan studies on human, atleast using those words, are not too common, but are becoming increasingly so.
+It difficult with lifespan samples, because the tests we use to study young children, and older adults are very different, and mapping the same constructs at different ages is quite challenging. 
+To my knowledge, only three of these studies again are longitudinal or prospective.
+
+
+---
+
+# Mixed models in papers
+
+&lt;img src="figures/meteyard_davies_2019_fig1_transp.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Meteyard &amp; Davies 
+&lt;i&gt;PsyArXiV&lt;/i&gt;, 2019, &lt;a href='https://psyarxiv.com/h3duq/'&gt;https://psyarxiv.com/h3duq/&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+The popularity of using mixed models is increasing.
+Here we see how the number of pubmed papers with linear mixed models increases yearly in psychological research, and this trend I'm pretty sure extends also to other fields.
+While mixed models as a consept is not new, the increasing power of computer and development of available tools is making it possible for more and more people to apply these methods to their data. 
+So we will look more into using mixed models in lifespan research, and the benefits of that.
+
+
+---
 class: center
 # All data synthesized using the LCBC data-base
 
@@ -132,17 +191,18 @@ All the data I will be using throughout this talk is synthesized based on the LC
 Which is a data base with more than 2.500 participants, and over 4500 observations across those participants, many having between 3 and 4 measurement timepoints.
 
 ---
-class: inverse, center
+class: dark, center, middle, clear 
 
 # Lifespan research
-&lt;div style="align: center"&gt;
-&lt;h1&gt; - using cohorts - &lt;/h1&gt;
-&lt;/div&gt;
+
+##  - using cohorts - 
+
 
 ???
 I'll begin walking through doing lifespan research using age cohorts.
 Something that is very often done, because that is the most convenient way of studying it.
 However, cohort studies have some _real_ limitations we need to think about, and they constrain the questions we are able to answer.
+
 ---
 
 # Lifespan research - using cohorts
@@ -178,7 +238,7 @@ Here I did a rough grouping based on visual inspection only.
 And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age being opposite. 
 
 ---
-class: inverse
+class: dark
 
 # Lifespan research - using cohorts
 
@@ -198,16 +258,20 @@ class: inverse
 
 ???
 
-SO there are some limitations with cohorts.
+So there are some limitations with cohorts.
 In fact, the power needed to find results is much higher in cohort studies as compared to longitudinal studies, as I will exemplify from a published study from out center later.
 
 ---
 class: center, inverse
 
 # Lifespan research
-&lt;div style="align: center"&gt;
-&lt;h1&gt; - longitudinal linear models - &lt;/h1&gt;
-&lt;/div&gt;
+
+##  - longitudinal linear models - 
+
+
+???
+For now, I want to zoom in a bit on the adulthood group.
+I choose this because a linear model is not a bad fit for this data.
 
 ---
 
@@ -217,8 +281,6 @@ class: center, inverse
 
 ???
 
-For now, I want to zoom in a bit on the adulthood group.
-I choose this because a linear model is not a bad fit for this data.
 You can tell by the data that there is some curvature to the data, but its not so much that a linear model will go very wrong.
 But I was asked to come and talk about lognitudinal data, not cohorts.
 So I've covered cohorts to show-case better what logitudinal studies bring to the table; the ability to actually say something about how people change, not only that there are differences between people of different ages. 
@@ -239,8 +301,14 @@ We are breaking all the rules for running simpler models like repeated measures 
 Longitudinal lifespan data usually does not have this tidy feature. People are difficult to sample, and controlling time intervals and people skipping measurement times becomes increasingly difficult the longer the study goes on. 
 And you want the studies to keep on going as long as possible, and for each new observation from a participant, that participant becomes increasingly important to the study.
 
----
 
+???
+We saw in the original plots, that there clearly was more to this relationship than a simple 
+linear solution.
+When data is clearly non-linear, and you cannot improve fit with polynomials (quadratic, cubic etc.), then a smoothing spline is what you are after.
+Smoothing splines are very neat, and often by default fine pretty good solutions.
+
+---
 # Lifespan research - longitudinal linear models 
 
 
@@ -259,12 +327,18 @@ You loose all those who only have a single data point, and those with more than 
 It forces you to really reduce the data a lot, when what you have is so rich, and ideal for other types of models, you should be utilizing those.
 
 ---
-class: inverse, center
+class: dark, center, middle
 
 # Lifespan research
-&lt;div style="align: center"&gt;
-&lt;h1&gt; - longitudinal smoothing spline models - &lt;/h1&gt;
-&lt;/div&gt;
+
+##  - longitudinal smoothing spline models - 
+
+
+???
+We saw in the original plots, that there clearly was more to this relationship than a simple 
+linear solution.
+When data is clearly non-linear, and you cannot improve fit with polynomials (quadratic, cubic etc.), then a smoothing spline is what you are after.
+Smoothing splines are very neat, and often by default fine pretty good solutions.
 
 ---
 
@@ -291,7 +365,6 @@ We know they are not.
 ![](background-talk_files/figure-html/gam-vs-gamm-1.png)&lt;!-- --&gt;
 
 ???
- 
 So when we look at the prediction, the fit, of the model using the information about observations belonging together, the curve changes.
 The change might not seem large here, but it makes a difference, and the line parsimoniously also _looks_ like it fits the data better.
 We no longer have that weird tail going upwards, and there is less waves in the curve, and the curve at the end has a more smooth transition. 
@@ -301,12 +374,11 @@ And also, we can see that people are not ending up in the same place.
 People doing well at earliuer ages have a similar change trajectory as those with lower scores, but there is an offset diffference. 
 
 ---
-class: inverse, center
+class: title-slide, middle
 
-# Mixed models in lifespan research
-&lt;div style="align: center"&gt;
-&lt;h1&gt; - literature examples - &lt;/h1&gt;
-&lt;/div&gt;
+# Mixed models in lifespan research 
+
+##  - literature examples - 
 
 ???
 
@@ -316,8 +388,17 @@ It should now not come as a suprise to you that there are lots of benefits from 
 
 # Mixed models in lifespan research - examples
 
+???
+**Objectives**
+Establish how the relationship between sleep and hippocampal volume loss unfolds across the adult lifespan.
+
+**Methods**
+Self-reported sleep measures and MRI-derived hippocampal volumes were obtained from 3105 cognitively normal participants (18–90 years). Hippocampal volume change was estimated from longitudinal MRIs, followed up to 11 years with a mean interval of 3.3 years. 
+
+--
+
 ### Figure 2
-&lt;img src="figures/fjell_sleep_2019_fig2.jpg" width="65%" style="display: block; margin: auto;" /&gt;
+&lt;img src="figures/fjell_sleep_2019_fig2_transp.png" width="65%" style="display: block; margin: auto;" /&gt;
 
 &lt;div class="citation"&gt;
 Fjell et al. (2019)
@@ -326,10 +407,32 @@ Fjell et al. (2019)
 &lt;/div&gt;
 
 ???
+Relationships between age and hippocampal volume in Lifebrain. **Left panel:** GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). . **Right panel:** Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample.
 
-Relationships between age and hippocampal volume in Lifebrain. **Left panel:** GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). Dotted lines represent 95% CI. **Right panel:** Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample. x-Axis denotes age in years, y-axis hippocampal volume in mm3.
+**Results**
+No cross-sectional sleep—hippocampal volume relationships were found.
+ 
+---
 
+# Mixed models in lifespan research - examples
 
+### Figure 8
+&lt;img src="figures/fjell_sleep_2019_fig8_transp.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Fjell et al. (2019)
+&lt;i&gt;Sleep&lt;/i&gt;,
+&lt;a href='https://doi.org/10.1093/sleep/zsz280'&gt;https://doi.org/10.1093/sleep/zsz280&lt;/a&gt;
+&lt;/div&gt;
+
+???
+Annual percent change in volume as a function of sleep. Tested at four different ages, annual reduction in hippocampal volume was on average 0.22% greater in participants scoring two compared to zero on the PSQI items quality, efficiency, problems, and daytime tiredness. Error bars denote 95% CI.
+
+**Results**
+However, worse sleep quality, efficiency, problems, and daytime tiredness were related to greater hippocampal volume loss over time, with high scorers showing 0.22% greater annual loss than low scorers. The relationship between sleep and hippocampal atrophy did not vary across age. 
+
+**Conclusions**
+Worse self-reported sleep is associated with higher rates of hippocampal volume decline across the adult lifespan.
 
 ---
 
@@ -337,7 +440,7 @@ Relationships between age and hippocampal volume in Lifebrain. **Left panel:** G
 
 ### Figure 9
 
-&lt;img src="figures/fjell_sleep_2019_fig9.png" width="58%" style="display: block; margin: auto;" /&gt;
+&lt;img src="figures/fjell_sleep_2019_fig9_transp.png" width="58%" style="display: block; margin: auto;" /&gt;
 
 &lt;div class="citation"&gt;
 Fjell et al. (2019)
@@ -346,18 +449,23 @@ Fjell et al. (2019)
 &lt;/div&gt;
 
 ???
+Simulations showed that the observed longitudinal effects were too small to be detected as age-interactions in the cross-sectional analyses.
 
 Figure 9. 
-Statistical power. The figure illustrates the superior power of the longitudinal design. The x-axis represents the size of PSQI × time (longitudinal) or PSQI × age interactions (cross-sectional). The y-axis represents statistical power. The dotted vertical line represents the observed effect size of the sleep efficiency × time interaction. As shown, the power to detect this is close to 1 (100%) with the longitudinal design, and very poor with the cross-sectional design.
-
+Statistical power. The figure illustrates the superior power of the longitudinal design. The x-axis represents the size of PSQI × time (longitudinal) or PSQI × age interactions (cross-sectional). The dotted vertical line represents the observed effect size of the sleep efficiency × time interaction. As shown, the power to detect this is close to 1 (100%) with the longitudinal design, and very poor with the cross-sectional design.
 
 ---
 
 # Mixed models in lifespan research - examples
 
-### Figure 1
+???
+The human cerebral cortex is highly regionalized, and this feature emerges from morphometric gradients in the cerebral vesicles during embryonic development. We tested if this principle of regionalization could be traced from the embryonic development to the human life span. Data-driven fuzzy clustering was used to identify regions of coordinated longitudinal development of cortical surface area (SA) and thickness (CT) (n = 301, 4–12 years).
 
-&lt;img src="figures/fjell_2019b_fig1.png" width="100%" /&gt;
+--
+
+### Figure 1 _(modified)_
+
+&lt;img src="figures/fjell_cc_2019_fig1_mod_transp.png" width="85%" style="display: block; margin: auto;" /&gt;
 
 &lt;div class="citation"&gt;
 Fjell et al. (2019) &lt;i&gt;Cerebral Cortex&lt;/i&gt;, 
@@ -365,17 +473,18 @@ Fjell et al. (2019) &lt;i&gt;Cerebral Cortex&lt;/i&gt;,
 &lt;/div&gt;
 
 ???
-
-Surface area. **Left panel:** Clusters of coordinated surface area (SA) in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
-
+each identified developmental SA and CT clusters showed distinguishable life span trajectories in a larger longitudinal dataset (4–88 years, 1633 observations), and the SA and CT clusters showed differential relationships to cognitive functions.
+ 
+Surface area. **Left panel:** Clusters of coordinated surface area (SA) in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age).
+ 
 ---
 
 # Mixed models in lifespan research - examples
 
-### Figure 2
+### Figure 2 _(modified)_
 
-&lt;img src="figures/fjell_2019b_fig2.png" width="100%" /&gt;
-
+&lt;img src="figures/fjell_cc_2019_fig2_mod_transp.png" width="85%" style="display: block; margin: auto;" /&gt;
+ 
 &lt;div class="citation"&gt;
 Fjell et al. (2019) &lt;i&gt;Cerebral Cortex&lt;/i&gt;, 
 &lt;a href='https://doi.org/10.1093/cercor/bhy266'&gt;https://doi.org/10.1093/cercor/bhy266&lt;/a&gt;
@@ -383,14 +492,20 @@ Fjell et al. (2019) &lt;i&gt;Cerebral Cortex&lt;/i&gt;,
 
 ???
 
-Cortical thickness. **Left panel:** Clusters of coordinated cortical thickness in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters (see Fig. 1 legend for explanation). The colors of the curves correspond to the cluster color in the left figure. The shaded area denotes ±2 standard errors of the mean.
+Cortical thickness. **Left panel:** Clusters of coordinated cortical thickness in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters 
 
+This means that regions that developed together in childhood also changed together throughout life, demonstrating continuity in regionalization of cortical changes. The AP divide in SA development also characterized genetic patterning obtained in an adult twin sample. In conclusion, the development of cortical regionalization is a continuous process from the embryonic stage throughout life.
 ---
 
 # Mixed models in lifespan research - examples
 
+???
+Changes in cortical thickness occur throughout the lifespan, but the neurobiological substrates are poorly understood. Here, we compared the regional patterns of cortical thinning (&gt;4000 observations) with those of gene expression for several neuronal and non-neuronal cell types (Allen Human Brain Atlas). Inter-regional profiles of less thinning and greater gene expression several marker genes during development. The same expression – thinning patterns – were mirrored in aging, but in the opposite direction. 
+
+--
+
 ### Figure 1
-&lt;img src="figures/vidal-pineiro_2019.jpg" width="67%" style="display: block; margin: auto;" /&gt;
+&lt;img src="figures/vidal-pineiro_2019_transp.png" width="67%" style="display: block; margin: auto;" /&gt;
 
 &lt;div class="citation"&gt;
 Vidal-Piñeiro et al. (2019) &lt;i&gt;bioRxiv&lt;/i&gt;, doi: &lt;a href='https://doi.org/10.1101/585786'&gt;https://doi.org/10.1101/585786&lt;/a&gt;
@@ -406,12 +521,48 @@ Trajectories of average cortical thickness. The upper and lower plots exhibit th
 
 .pull-left[
 ### Figure 2
-&lt;img src="figures/fjell_2019a_fig1.jpg" width="68%" style="display: block; margin: auto;" /&gt;
+&lt;img src="figures/fjell_dcn_2019_fig2_transp.png" width="68%" style="display: block; margin: auto;" /&gt;
 ]
+
+???
+The aim of the present study was to test whether there are unique developmental changes in recall memory performance using extended retention intervals, and whether these are related to structural maturation of sub-regions of the hippocampus. 650 children and adolescents from 4.1 to 24.8 years were assessed in total 962 times (mean interval ≈ 1.8 years). The California Verbal Learning Test (CVLT) and the Rey Complex Figure Test (CFT) were used. Recall was tested 30 min and ca. 10 days after encoding. 
+
+**Fig. 2.** Developmental trajectories for memory.
+Development of CVLT (left column) and CFT (right column) recall performance. The plots in the bottom row show how performance in the 10 days retention interval recall condition improves when recall performance on the 30 min retention interval condition is accounted for.
+
+--
 
 .pull-right[
 ### Figure 3
-&lt;img src="figures/fjell_2019a_fig2.jpg" width="68%" style="display: block; margin: auto;" /&gt;
+&lt;img src="figures/fjell_dcn_2019_fig3_transp.png" width="68%" style="display: block; margin: auto;" /&gt;
+]
+
+&lt;div style="text-align: right; font-size: 12pt;"&gt;
+Fjell et al. (2019)
+&lt;i&gt;Developmental Cognitive Neuroscience&lt;/i&gt;,
+&lt;a href='https://doi.org/10.1016/j.dcn.2019.100723'&gt;https://doi.org/10.1016/j.dcn.2019.100723&lt;/a&gt;
+&lt;/div&gt; 
+
+???
+
+**Fig. 3.** Developmental trajectories for hippocampus.
+Structural maturation of hippocampal sub-regions. Top row shows microstructure (mean diffusion), bottom row shows volume.
+ 
+We found unique developmental effects on recall in the extended retention interval condition independently of 30 min recall performance. For CVLT, major improvements happened between 10 and 15 years. 
+
+---
+
+# Mixed models in lifespan research - examples
+
+
+.pull-left[
+### Figure 4
+&lt;img src="figures/fjell_dcn_2019_fig4_transp.png" width="68%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+### Figure 5 _(modified)_
+&lt;img src="figures/fjell_dcn_2019_fig5_mod_transp.png" width="78%" style="display: block; margin: auto;" /&gt;
 ]
 
 &lt;div style="text-align: right; font-size: 12pt;"&gt;
@@ -422,11 +573,29 @@ Fjell et al. (2019)
 
 ???
 
-**Fig. 2.** Developmental trajectories for memory.
-Development of CVLT (left column) and CFT (right column) recall performance. The plots in the bottom row show how performance in the 10 days retention interval recall condition improves when recall performance on the 30 min retention interval condition is accounted for.
+**Memory and hippocampal subfields**
 
-**Fig. 3.** Developmental trajectories for hippocampus.
-Structural maturation of hippocampal sub-regions. Top row shows microstructure (mean diffusion), bottom row shows volume.
+The heat plot illustrates the statistical significance (uncorrected p-value) of the relationship between hippocampal structure (volume and mean diffusion) and memory performance. 
+The relationships did not show anterior-posterior hippocampal axis differences. In conclusion, performance on recall tests using extended retention intervals shows unique development, likely due to changes in encoding depth or efficacy, or improvements of long-term consolidation processes.
+
+---
+
+# Mixed models in lifespan research - examples
+
+### Figure 2
+
+&lt;img src="figures/ferschmann_fig2_transp.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Freschmann et al. 
+&lt;i&gt;Developmental Cognitive Neuroscience&lt;/i&gt;, Volume 40, December 2019, &lt;a href='https://doi.org/10.1016/j.dcn.2019.100734'&gt;https://doi.org/10.1016/j.dcn.2019.100734&lt;/a&gt;
+&lt;/div&gt;
+
+???
+Prosocial behavior, or voluntary actions that intentionally benefit others, relate to desirable developmental outcomes such as peer acceptance, while lack of prosocial behavior has been associated with several neurodevelopmental disorders. Mapping the biological foundations of prosociality may thus aid our understanding of both normal and abnormal development, yet how prosociality relates to cortical development is largely unknown. Here, relations between prosociality, as measured by the Strengths and Difficulties Questionnaire (self-report), and changes in thickness across the cortical mantle were examined using mixed-effects models. The sample consisted of 169 healthy individuals (92 females) aged 12–26 with repeated MRI from up to 3 time points, at approximately 3-year intervals (301 scans). 
+
+- Prosociality relates to cortical development from early adolescence to adulthood  
+
 
 ---
 
@@ -434,7 +603,7 @@ Structural maturation of hippocampal sub-regions. Top row shows microstructure (
 
 ### Figure 3
 
-&lt;img src="figures/ferschmann_fig3.jpg" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="figures/ferschmann_fig3_transp.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 &lt;div class="citation"&gt;
 Freschmann et al. 
@@ -443,7 +612,29 @@ Freschmann et al.
 
 ???
 
-Fig. 3. Cortical maturation for individuals with high and low prosociality. Individuals were classified as high prosocial if they consistently rated themselves as high on prosociality throughout the study, and as low prosocial if they consistently rated themselves as low. The plot shows mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. The fits were produced using the following model: thickness ∼ s(age, bs = ‘cr’) + sex by means of GAMM in R, bs = ‘cr’ refers to splines with cubic spline basis. Note that the low/high division was made for illustration purposes only, while the statistical analyses were run with prosocial behavior as a continuous measure.
+- Higher prosociality relates to greater cortical thinning in early adolescence  
+- This is followed by attenuation of this pattern during the transition to adulthood  
+
+Fig. 3. Cortical maturation for individuals with high and low prosociality. Individuals were classified as high prosocial if they consistently rated themselves as high on prosociality throughout the study, and as low prosocial if they consistently rated themselves as low. The plot shows mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. Note that the low/high division was made for illustration purposes only, while the statistical analyses were run with prosocial behavior as a continuous measure.
+
+---
+
+# Mixed models in lifespan research - examples
+
+### Figure 3
+
+&lt;img src="figures/ferschmann_fig4_transp.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+&lt;div class="citation"&gt;
+Freschmann et al. 
+&lt;i&gt;Developmental Cognitive Neuroscience&lt;/i&gt;, Volume 40, December 2019, &lt;a href='https://doi.org/10.1016/j.dcn.2019.100734'&gt;https://doi.org/10.1016/j.dcn.2019.100734&lt;/a&gt;
+&lt;/div&gt;
+
+???
+
+Fig. 4. Contour plots of relations between prosocial behavior, age and cortical thickness. The plots indicate that the relations between prosociality and CT were positive for the youngest and the oldest group across all the identified significant clusters. Such a relationship was not present in the middle of the age range (late adolescence). Each plot contains mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. The green to white color scale indicates low to high cortical thickness values.
+
+- Associations are observed in regions involved in social cognition and behavioral control  
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
