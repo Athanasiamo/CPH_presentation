@@ -823,10 +823,9 @@ sim_data_gamm2_predmat &lt;- expand_grid(
   ))
 
 sim_data_gamm2_predmat %&gt;% 
-  filter(Matrix == 1) %&gt;% 
-ggplot(aes(x = Age, y = fit, 
-           colour = Matrix,
-           group = Matrix)) + 
+  ggplot(aes(x = Age, y = fit, 
+             colour = Matrix,
+             group = Matrix)) + 
   geom_line()
 ```
 ]
@@ -838,7 +837,6 @@ ggplot(aes(x = Age, y = fit,
 ---
 
 # Mixed models - comparing models
-
 
 ???
 R tells us that the models are refitted with ML instead of REML. This is necessary for model comparison, and it's very handy that this is done for us, so we don't have to keep running models in parallell for comparisons.
@@ -933,8 +931,6 @@ sim_data_gamm_null &lt;-
 ---
 
 # Mixed models - comparing models
-
-
 
 ```r
 anova(
