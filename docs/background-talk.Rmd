@@ -1,6 +1,6 @@
 ---
 title: "The use of mixed models in lifespan research"
-subtitle: " - key consepts - "
+subtitle: " - key concepts - "
 author: "Athanasia Mowinckel"
 date: "Feb. 29th 2020"
 output:
@@ -19,13 +19,13 @@ output:
 options(htmltools.dir.version = FALSE)
 library(knitr); library(kableExtra)
 library(mgcv); library(tidyverse); 
-opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, cache = TRUE, 
+opts_chunk$set(echo = FALSE, fig.width = 16, fig.height = 6.5, #cache = TRUE, 
                warning = FALSE, message = FALSE, dpi = 200)
 
 source(here::here("/R/synth-data.R"))
 source(here::here("/R/scale_colours.R"))
 
-theme_set(theme_minimal(base_size = 25, base_line_size = 1, base_family = "Avenir"))
+theme_set(theme_minimal(base_size=25, base_family="Avenir"))
 
 load(here::here("data/sim_data.rda"))
 
@@ -46,8 +46,8 @@ sim_data <- sim_data %>%
 
 - Lifespan research using cohorts  
 - Lifespan research with longitudinal data  
-- Using linear mixed models with logitudinal data  
-- Using generalised additive mixed models with logitudinal data  
+- Using linear mixed models with longitudinal data  
+- Using generalized additive mixed models with longitudinal data  
 - Examples of mixed models applied in lifespan studies  
 ]
 
@@ -66,7 +66,7 @@ Both in terms of linear models, and also in terms of using smoothing splines for
 ]
 
 ???
-In the second talk we will go into the parciticalities.
+In the second talk we will go into the practicalities.
 Covering more exactly how to specify, inspect and evaluate mixed models in R.
 
 ---
@@ -101,7 +101,7 @@ Has anyone here played the puzzle game "Portal"?
 It's a really challenging game of puzzles you need to solve, you are set in a type of experiment and you are told at the end of almost every level or puzzle that you just need to finish all the puzzles and then there will be cake.
 So you start off with low levels, thinking this isn't too hard, you'll soon get cake. 
 Like science during Uni start, just follow the steps, you will make science.
-So you start doing your research, and slowly you start realising there are many hurdles.
+So you start doing your research, and slowly you start realizing there are many hurdles.
 It's a little trickier that the books claim, there are issues people did not discuss with you.
 But you keep going, there will be cake.
 
@@ -153,7 +153,7 @@ So you take anyone wanting to join, and have to make some constrains to your des
 ]
 
 ???
-What are the key consepts we want out of Lifespan research, what are the general questions people want answered?
+What are the key concepts we want out of Lifespan research, what are the general questions people want answered?
 But, a search on Pubmed for _human lifespan_ gave me 45993 results, but they mostly seem to discuss the expansion of human life, not the study of human lifespan differences per se. 
 Searching for _Lifespan trajectory_ gave me only 856 results, many of which are animal studies.
 
@@ -175,31 +175,9 @@ Searching for _Lifespan trajectory_ gave me only 856 results, many of which are 
 
 
 ???
-So lifespan studies on human, atleast using those words, are not too common, but are becoming increasingly so.
+So lifespan studies on human, at least using those words, are not too common, but are becoming increasingly so.
 It difficult with lifespan samples, because the tests we use to study young children, and older adults are very different, and mapping the same constructs at different ages is quite challenging. 
 To my knowledge, only three of these studies again are longitudinal or prospective.
-
-
----
-
-# Mixed models in papers
-
-```{r "lmm-pubmed", out.width="60%", fig.align="center"}
-include_graphics("figures/meteyard_davies_2019_fig1_transp.png")
-```
-
-<div class="citation">
-Meteyard & Davies 
-<i>PsyArXiV</i>, 2019, <a href='https://psyarxiv.com/h3duq/'>https://psyarxiv.com/h3duq/</a>
-</div>
-
-???
-
-The popularity of using mixed models is increasing.
-Here we see how the number of pubmed papers with linear mixed models increases yearly in psychological research, and this trend I'm pretty sure extends also to other fields.
-While mixed models as a consept is not new, the increasing power of computer and development of available tools is making it possible for more and more people to apply these methods to their data. 
-So we will look more into using mixed models in lifespan research, and the benefits of that.
-
 
 ---
 class: center
@@ -213,10 +191,10 @@ include_graphics(c("https://www.oslobrains.no/wp-content/uploads/2017/09/LCBC_wi
 ???
 
 All the data I will be using throughout this talk is synthesized based on the LCBC data-base.
-Which is a data base with more than 2.500 participants, and over 4500 observations across those participants, many having between 3 and 4 measurement timepoints.
+Which is a data base with more than 2.500 participants, and over 4500 observations across those participants, many having between 3 and 4 measurement time points.
 
 ---
-class: dark, center, middle, clear 
+class: dark, center
 
 # Lifespan research
 
@@ -240,7 +218,7 @@ knitr::include_graphics("anims/cohort.gif")
 ???
 
 If you begin with two samples, you get a nice straight line. The connection looks simple.
-Then, if you start adding more and more data, filling in the gaps in age, you will start to see that the nice straight line is not so nice and straigt, and the variance between different age cohorts also varies.
+Then, if you start adding more and more data, filling in the gaps in age, you will start to see that the nice straight line is not so nice and straight, and the variance between different age cohorts also varies.
 This is not the simple relationship you thought of. 
 
 ---
@@ -266,7 +244,7 @@ j %>%
                  colour=Age_group)) +
   geom_line(data=jm, inherit.aes = FALSE, 
              aes(x=Age_Mean, y = Hippocampus_Mean)) +
-  scale_colour_lifebrain()
+  scale_colour_lifebrain(aesthetics = c("colour", "fill"))
 ```
 
 ???
@@ -288,7 +266,7 @@ sim_data %>%
 
 In many cases, when people have large samples like this, they'll split them up by age-groups, perhaps using breakpoints in the data.
 Here I did a rough grouping based on visual inspection only.
-And there is nothing wrong per se in splitting data up like this, I do this myself when intepretations of my models start being difficult due to directions in young and old age being opposite. 
+And there is nothing wrong per se in splitting data up like this, I do this myself when interpretations of my models start being difficult due to directions in young and old age being opposite. 
 
 ---
 class: dark
@@ -314,8 +292,42 @@ class: dark
 So there are some limitations with cohorts.
 In fact, the power needed to find results is much higher in cohort studies as compared to longitudinal studies, as I will exemplify from a published study from out center later.
 
+
 ---
-class: center, inverse
+class: dark, middle, center, clear
+
+## "[...] even a perfect cross-sectional study is hopeless for the purpose of illuminating the causal structure of longitudinal change."
+
+<br>
+<div class="citation">
+Raz, N. & Lindenberger, U. (2011)  <br>
+Psychological bulletin, 137(5), 790–795. <br>   
+<a href="https://psycnet.apa.org/doiLanding?doi=10.1037%2Fa0024503">doi:10.1037/a0024503</a>
+</div>
+
+???
+Salthouse (2011) critically reviewed cross-sectional and longitudinal relations among adult age, brain structure, and cognition (ABC) and identified problems in interpretation of the extant literature. His review, however, missed several important points. 
+- First, individual differences among younger adults are not useful for understanding the aging of brain and behavior.
+- Mediation models of cross-sectional data represent age-related differences in target variables but fail to approximate time-dependent relations; thus, they do not elucidate the dimensions and dynamics of cognitive aging.
+
+---
+# When cross-sectional design leads us astray
+
+## Figure 3 _(modified)_
+
+```{r "nyberg", out.width="70%", fig.align="center"}
+include_graphics("figures/nyberg_pnas_2010_fig3_transp.png")
+```
+
+<div class="citation">
+Nyberg et al (2010) PNAS <a href="https://doi.org/10.1073/pnas.1012651108">https://doi.org/10.1073/pnas.1012651108</a>
+</div>
+
+???
+Cross-sectional estimates of age-related changes in brain structure and function were compared with 6-y longitudinal estimates. The results indicated increased sensitivity of the longitudinal approach as well as qualitative differences. Critically, the cross-sectional analyses were suggestive of age-related frontal over recruitment, whereas the longitudinal analyses revealed frontal under recruitment with advancing age. The cross-sectional observation of over recruitment reflected a select elderly sample. However, when followed over time, this sample showed reduced frontal recruitment. These findings dispute inferences of true age changes on the basis of age differences, hence challenging some contemporary models of neurocognitive aging, and demonstrate age-related decline in frontal brain volume as well as functional response.
+
+---
+class: center, dark
 
 # Lifespan research
 
@@ -328,6 +340,88 @@ I choose this because a linear model is not a bad fit for this data.
 
 ---
 
+# Lifespan studies on humans - longitudinal
+
+- [LCBC studies](https://www.oslobrains.no/)  
+
+- [Betula - Aging, memory, and dementia](https://www.umu.se/en/research/projects/betula---aging-memory-and-dementia/)  
+
+- [The Rhineland study](https://www.neurodegenerationresearch.eu/it/cohort/the-rhineland-study/)
+
+
+???
+going back to the studies of lifespan human brain and cognition, to my knowledge, only three of these studies again are longitudinal or prospective.
+Rhineland, LCBC and Betula.
+
+---
+# Longitudinal sampling
+
+.pull-left[
+## Tidy
+
+- Evenly spaced intervals  
+
+- Little to zero attrition  
+
+- Everyone follows the same protocol
+]
+
+???
+Usually when we start sampling, we think of a tidy nice scheme that out participants will follow. These tidy schemes also make it possible to use models like repeated measures Anova, and manually calculated slopes in our models to understand change.
+
+--
+
+.pull-right[
+## Chaos
+
+- Intervals nearly random  
+
+- Attrition nearly random  
+
+- Protocols nearly random  
+
+]
+
+???
+But often, reality does not meet expectation. 
+And indeed, if your plan is to use mixed models, a fair bit of randomness in your sampling methods is actually preferable. 
+
+---
+
+# Mixed models in papers
+
+```{r "lmm-pubmed", out.width="60%", fig.align="center"}
+include_graphics("figures/meteyard_davies_2019_fig1_transp.png")
+```
+
+<div class="citation">
+Meteyard & Davies 
+<i>PsyArXiV</i>, 2019, <a href='https://psyarxiv.com/h3duq/'>https://psyarxiv.com/h3duq/</a>
+</div>
+
+???
+
+The popularity of using mixed models is increasing.
+Here we see how the number of pubmed papers with linear mixed models increases yearly in psychological research, and this trend I'm pretty sure extends also to other fields.
+While mixed models as a concept is not new, the increasing power of computer and development of available tools is making it possible for more and more people to apply these methods to their data. 
+So we will look more into using mixed models in lifespan research, and the benefits of that.
+
+---
+
+# Mixed models
+
+```{r "hierarch", out.width="60%", fig.align="center"}
+include_graphics("figures/hierarchical_transp.png")
+```
+<div class="citation">
+<a href="https://slideplayer.com/slide/6049791/">source</a>
+</div>
+
+???
+Mixed models are not only suited for longitudinal studies, but actually any type of data where there is some structure or hierarchy in the data that might need to be accounted for.
+Multi-site data, are often treated in mixed models, where the sites are treated as we will treat people, in order to account for site-specific contributions to the observed data. 
+
+---
 # Lifespan research - longitudinal linear models 
 ```{r "long-lm"}
 adults <- sim_data[sim_data$group == "Adulthood", ]
@@ -339,12 +433,11 @@ adults %>%
     scale_colour_lifebrain(aesthetics = c("colour", "fill"))
 ```
 
-
 ???
 
 You can tell by the data that there is some curvature to the data, but its not so much that a linear model will go very wrong.
-But I was asked to come and talk about lognitudinal data, not cohorts.
-So I've covered cohorts to show-case better what logitudinal studies bring to the table; the ability to actually say something about how people change, not only that there are differences between people of different ages. 
+But I was asked to come and talk about longitudinal data, not cohorts.
+So I've covered cohorts to show-case better what longitudinal studies bring to the table; the ability to actually say something about how people change, not only that there are differences between people of different ages. 
 In this linear model, we are treating every data point as independent, as they are coming from different people. 
 Which in many studies is true, but not for this data. 
 
@@ -361,19 +454,12 @@ adults %>%
 
 ???
 
-Here, I have connected the datapoints originating from the same persion with lines.
+Here, I have connected the data points originating from the same person with lines.
 Notice how there are longitudinal participants across the entire lifespan, and that there is some order here. 
-We have longitudinal data, people are sampled at different ages, with different time intervals, and varying observational timepoints. 
+We have longitudinal data, people are sampled at different ages, with different time intervals, and varying observational time points. 
 We are breaking all the rules for running simpler models like repeated measures anovas, who particularly depend on data being sampled uniformly.
 Longitudinal lifespan data usually does not have this tidy feature. People are difficult to sample, and controlling time intervals and people skipping measurement times becomes increasingly difficult the longer the study goes on. 
 And you want the studies to keep on going as long as possible, and for each new observation from a participant, that participant becomes increasingly important to the study.
-
-
-???
-We saw in the original plots, that there clearly was more to this relationship than a simple 
-linear solution.
-When data is clearly non-linear, and you cannot improve fit with polynomials (quadratic, cubic etc.), then a smoothing spline is what you are after.
-Smoothing splines are very neat, and often by default fine pretty good solutions.
 
 ---
 # Lifespan research - longitudinal linear models 
@@ -417,7 +503,7 @@ You loose all those who only have a single data point, and those with more than 
 It forces you to really reduce the data a lot, when what you have is so rich, and ideal for other types of models, you should be utilizing those.
 
 ---
-class: dark, center, middle
+class: dark, center
 
 # Lifespan research
 
@@ -428,7 +514,7 @@ class: dark, center, middle
 We saw in the original plots, that there clearly was more to this relationship than a simple 
 linear solution.
 When data is clearly non-linear, and you cannot improve fit with polynomials (quadratic, cubic etc.), then a smoothing spline is what you are after.
-Smoothing splines are very neat, and often by default fine pretty good solutions.
+Smoothing splines are very neat, and often by default find pretty good solutions.
 
 ---
 
@@ -445,7 +531,7 @@ sim_data %>%
 
 ???
 
-When looking at the entire dataset, the model fit here is not really linear, it has a smooth shape. 
+When looking at the entire data set, the model fit here is not really linear, it has a smooth shape. 
 A curve that we should be accounting for in some way.
 This is quite common in lifespan research. Usually, there is a type of curve, and the curve is not cubic or quadratic or any type of polynomial.
 Those kinds of curves you can fit using a linear model, though that might sound counter intuitive. Polynomials are variations on the linear model, so it is not too difficult to alter the fit. 
@@ -492,7 +578,7 @@ We no longer have that weird tail going upwards, and there is less waves in the 
 The gam makes it look like a type of tipping point around age 60, when people have an accelerated decline, and in fact, a lot of research out there is showing just that.
 But here we can see, that when we incorporate longitudinal data aspects, that tipping point is not so tipping, its a more gradual change. 
 And also, we can see that people are not ending up in the same place. 
-People doing well at earliuer ages have a similar change trajectory as those with lower scores, but there is an offset diffference. 
+People doing well at earlier ages have a similar change trajectory as those with lower scores, but there is an offset difference. 
 
 ---
 class: title-slide, middle
@@ -503,7 +589,7 @@ class: title-slide, middle
 
 ???
 
-It should now not come as a suprise to you that there are lots of benefits from doing mixed models when you have longitudinal or repeated measures data.
+It should now not come as a surprise to you that there are lots of benefits from doing mixed models when you have longitudinal or repeated measures data.
 
 ---
 
@@ -530,7 +616,7 @@ Fjell et al. (2019)
 </div>
 
 ???
-Relationships between age and hippocampal volume in Lifebrain. **Left panel:** GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, covarying for sex, ICV, and study (random effect). . **Right panel:** Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample.
+Relationships between age and hippocampal volume in Lifebrain. **Left panel:** GAMM was used to obtain the age-curve for hippocampal volume, using both cross-sectional and longitudinal information, co-varying for sex, ICV, and study (random effect). . **Right panel:** Spaghetti plot of hippocampal volume and volume change for all participants, color-coded by sample.
 
 **Results**
 No cross-sectional sleep—hippocampal volume relationships were found.
@@ -602,7 +688,7 @@ Fjell et al. (2019) <i>Cerebral Cortex</i>,
 </div>
 
 ???
-each identified developmental SA and CT clusters showed distinguishable life span trajectories in a larger longitudinal dataset (4–88 years, 1633 observations), and the SA and CT clusters showed differential relationships to cognitive functions.
+each identified developmental SA and CT clusters showed distinguishable life span trajectories in a larger longitudinal data set (4–88 years, 1633 observations), and the SA and CT clusters showed differential relationships to cognitive functions.
  
 Surface area. **Left panel:** Clusters of coordinated surface area (SA) in development, 2- (top), 3- (middle), and 4-cluster (bottom) solutions. **Right panel:** The life span trajectories of each cluster from the 3-cluster solution. **Top:** Trajectories residualized on age (x-axis). **Bottom:** The residual age relationship (y-axis) for each cluster accounting for the other 2 clusters. These curves show the relationship between each cluster and age, if the common variance shared with the other clusters are accounted for. Relative to the other clusters, the anterior cluster shows a slight increase with age (larger cluster area goes with older age), while the limbic cluster shows a linear decline (larger cluster area goes with younger age).
  
@@ -782,3 +868,26 @@ Freschmann et al.
 Fig. 4. Contour plots of relations between prosocial behavior, age and cortical thickness. The plots indicate that the relations between prosociality and CT were positive for the youngest and the oldest group across all the identified significant clusters. Such a relationship was not present in the middle of the age range (late adolescence). Each plot contains mean cortical thickness from the clusters where interactions between prosociality and age2 were significant. The green to white color scale indicates low to high cortical thickness values.
 
 - Associations are observed in regions involved in social cognition and behavioral control  
+
+---
+class: dark, center
+
+# Lifespan research - Summary
+
+.pull-left[
+## Cohort studies
+### Can reveal variability between people and ages
+### Can cover the lifespan with enough samples 
+### Can reveal plausible trajectories  
+### Easier to sample, requires large sample size
+]
+
+--
+
+.pull-right[
+## Longitudinal studies
+### Can reveal real changes **over time**
+### Can reveal variations in offset **and** slopes
+### Harder to sample, requires smaller sample size
+### Problems with possible attrition bias
+]

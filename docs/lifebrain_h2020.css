@@ -133,11 +133,7 @@ a {
  font-size: 12pt;
 }
 
-.dark .middle h1 {
-  color: #FAFAFA;
-}
-
-.dark h1 {
+.dark h1{
   color: #000;
 }
 
@@ -145,11 +141,15 @@ a {
   color: #FAFAFA;
 }
 
+.dark a {
+  color: #f7ec48;
+}
+
 .inverse h1 {
-  color: #FAFAFA;
+  color: #fafafa;
 } 
 
-.inverse h2, .inverse h3, .inverse h4 {
+.inverse > h2, h3, h4 {
   color: #000;
 } 
 

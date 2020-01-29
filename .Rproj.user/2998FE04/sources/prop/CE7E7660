@@ -1,7 +1,8 @@
 {
-    "cursorPosition" : "179,83",
+    "cursorPosition" : "4,22",
     "docOutlineVisible" : "1",
-    "last_setup_crc32" : "",
-    "scrollLine" : "164",
+    "ignored_words" : "lm,lightgrey,https,doi,zsz,fjell,transp,cercor,bhy,vidal,pineiro,bioRxiv,dcn\n",
+    "last_setup_crc32" : "20263BCC6663ec95",
+    "scrollLine" : "4",
     "working_dir" : "project"
 }
