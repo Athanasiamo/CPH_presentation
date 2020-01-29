@@ -466,7 +466,6 @@ library(mgcv)
 m1 <- lm(Hippocampus ~ Age, data=sim_data)
 mm1 <- gamm(Hippocampus ~ Age, random = list(ID = ~1), data=sim_data)
 
-
 pred_data <- tibble(Age = 20:60)
 fit_data <- sim_data %>% 
   mutate(
@@ -492,7 +491,7 @@ sim_data %>%
 ???
 We are trying to fit a linear model, on data that is quite clearly not linear.
 This standard generalized additive model clearly shows us that a splining function will be much better suited to this data. It follows the trajectories much much better.
-Ww can thankfully do generalized additive mixed models, so that suits are needs!
+We can thankfully do generalized additive mixed models, so that suits are needs!
 
 ---
 
